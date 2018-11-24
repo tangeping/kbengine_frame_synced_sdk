@@ -1,0 +1,57 @@
+<root>
+	<OBJECT_ID>			INT32		</OBJECT_ID>
+	<BOOL>				UINT8		</BOOL>
+	<DBID>				UINT64		</DBID>
+	<UID>				UINT64		</UID>
+	<UID1>				PYTHON		</UID1>	
+	<ENTITY_ID>			INT32		</ENTITY_ID>
+	<ENTITY_NO>			UINT32		</ENTITY_NO>
+	<SPACE_ID>			UINT32		</SPACE_ID>
+	<POSITION3D>		VECTOR3		</POSITION3D>
+	<DIRECTION3D>		VECTOR3		</DIRECTION3D>
+	<ENTITY_UTYPE>		UINT32		</ENTITY_UTYPE>
+	<SPACE_KEY>			UINT64		</SPACE_KEY>
+
+    <FRAMEID>             UINT32      </FRAMEID>
+    <CMD_TYPE>             UINT8      </CMD_TYPE>	
+
+
+    <ENTITY_DATA>	FIXED_DICT
+		<implementedBy>ENTITY_DATA.inst</implementedBy>
+		<Properties>
+			<entityid>
+				<Type>	ENTITY_ID	</Type>
+			</entityid>
+			<cmd_type>
+				<Type>	CMD_TYPE	</Type>
+			</cmd_type>
+			<datas>
+				<Type>	BLOB	</Type>
+			</datas>
+		</Properties>
+	</ENTITY_DATA>
+
+
+	<FRAME_DATA>	FIXED_DICT
+		<implementedBy>FRAME_DATA.inst</implementedBy>
+		<Properties>
+			<frameid>
+				<Type>	FRAMEID	</Type>
+			</frameid>
+			<operation>
+				<Type>	ARRAY <of> ENTITY_DATA </of> </Type>
+			</operation>
+		</Properties>
+	</FRAME_DATA>
+
+	<FRAME_LIST>	FIXED_DICT
+		<implementedBy>FRAME_LIST.inst</implementedBy>
+		<Properties>
+			<values>
+				<Type>	ARRAY <of> FRAME_DATA </of>	</Type>
+			</values>
+		</Properties>
+	</FRAME_LIST>
+
+
+</root>
