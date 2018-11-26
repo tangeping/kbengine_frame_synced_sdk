@@ -13,7 +13,7 @@ from FRAME_DATA import TFrameData
 from FRAME_LIST import TFrameList
 
 
-class Frame(KBEngine.EntityComponent):
+class FrameSync(KBEngine.EntityComponent):
 	def __init__(self):
 		KBEngine.EntityComponent.__init__(self)
 		self.avatars = {}

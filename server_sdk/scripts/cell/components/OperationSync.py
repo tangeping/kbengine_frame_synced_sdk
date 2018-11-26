@@ -3,7 +3,7 @@ import KBEngine
 import GlobalDefine
 from KBEDebug import *
 
-class Operation(KBEngine.EntityComponent):
+class OperationSync(KBEngine.EntityComponent):
 	def __init__(self):
 		KBEngine.EntityComponent.__init__(self)
 
