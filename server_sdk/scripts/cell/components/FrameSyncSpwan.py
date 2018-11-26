@@ -2,14 +2,17 @@
 import KBEngine
 from KBEDebug import *
 
-class OperationSync(KBEngine.EntityComponent):
+class FrameSyncSpwan(KBEngine.EntityComponent):
 	def __init__(self):
 		KBEngine.EntityComponent.__init__(self)
+		self.activeEntity = None
 
 	def onAttached(self, owner):
 		"""
-		"""
+		"""			
 		INFO_MSG("Operation::onAttached(): owner=%i" % (owner.id))
+
+		self.activeEntity = KBEngine.createEntity("FrameSyncMgr", self.spaceID, tuple(self.position), tuple(self.direction), {})
 
 	def onDetached(self, owner):
 		"""
@@ -17,13 +20,7 @@ class OperationSync(KBEngine.EntityComponent):
 		INFO_MSG("Operation::onDetached(): owner=%i" % (owner.id))
 
 
-	def reportFrame(self,exposed,framedata):
-		"""
-		上传操作帧
-		"""
-		if exposed != self.id:
-			return
 
-		self.getCurrSpace().component1.reportFrame(self.owner,framedata)
+
 
 

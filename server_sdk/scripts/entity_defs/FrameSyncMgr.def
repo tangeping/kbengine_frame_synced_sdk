@@ -1,0 +1,51 @@
+<root>
+	<Properties>
+
+		<state>
+			<Type>			INT8			</Type>
+			<Flags>			OWN_CLIENT		</Flags>
+			<Default>		0				</Default>
+		</state>
+
+		<farmeID>
+			<Type>			FRAMEID			</Type>
+			<Flags>			CELL_PUBLIC		</Flags>
+		</farmeID>
+
+		<framePool>
+			<Type>			FS_FRAME_LIST			</Type>
+			<Flags>			CELL_PUBLIC			</Flags>
+		</framePool>
+
+	</Properties>
+
+	<BaseMethods>
+
+	</BaseMethods>
+	
+	<CellMethods>
+		<addPlayer>
+			<Arg>		ENTITYCALL		</Arg>
+		</addPlayer>
+
+		<removePlayer>
+			<Arg>		ENTITY_ID		</Arg>
+		</removePlayer>
+
+		<start>
+		</start>
+
+		<stop>
+		</stop>
+
+		<reportFrame>
+		    <Arg>       ENTITYCALL      </Arg>
+            <Arg>       FS_ENTITY_DATA      </Arg>
+        </reportFrame>
+
+	</CellMethods>
+
+	<ClientMethods>
+	</ClientMethods>
+</root>
+
