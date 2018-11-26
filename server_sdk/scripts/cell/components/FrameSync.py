@@ -6,9 +6,9 @@ import math
 import time
 import copy
 
-from ENTITY_DATA import TEntityFrame
-from FRAME_DATA import TFrameData
-from FRAME_LIST import TFrameList
+from FS_ENTITY_DATA import FS_EntityFrame
+from FS_FRAME_DATA import FS_FrameData
+from FS_FRAME_LIST import FS_FrameList
 
 
 # ------------------------------------------------------------------------------
@@ -48,8 +48,8 @@ class FrameSync(KBEngine.EntityComponent):
 		初始化帧的数据
 		'''
 		self.farmeID = 1
-		operation = TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
-		self.emptyFrame = TFrameData().createFromDict({"frameid":0,"operation":[operation]})
+		operation = FS_EntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
+		self.emptyFrame = FS_FrameData().createFromDict({"frameid":0,"operation":[operation]})
 		self.currFrame = copy.deepcopy(self.emptyFrame)
 		
 	def onTimer(self, tid, userArg):
@@ -110,7 +110,7 @@ class FrameSync(KBEngine.EntityComponent):
 		if entityCall is None or self.state != FS_STATE_RUNNING:
 			return
 
-		operation = TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
+		operation = FS_EntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
 
 		if self.currFrame[0] <= 0:			
 			self.currFrame[1] = [operation]
@@ -121,7 +121,7 @@ class FrameSync(KBEngine.EntityComponent):
 		"""
 		广播逻辑帧
 		"""
-		if self.state != FRAME_SYNC_STATE_RUNNING:
+		if self.state != FS_STATE_RUNNING:
 			return
 
 		self.currFrame[0] = self.farmeID
