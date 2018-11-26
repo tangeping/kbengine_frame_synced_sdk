@@ -3,9 +3,9 @@
 
 ##配置文件
 
-使用" <gameUpdateHertz> 30 </gameUpdateHertz>  "固定频率参数
+使用 ` <gameUpdateHertz> 30 </gameUpdateHertz>  `固定频率参数
 	
-"<baseapp>  <externalUdpPorts_min> "和 "<externalUdpPorts_max>" 配置UDP端口，使用UDP通信
+` <baseapp>/<externalUdpPorts_min> `和 `<externalUdpPorts_max>` 配置UDP端口，使用UDP通信
 
 
 ##包目录
