@@ -3,7 +3,7 @@ import KBEngine
 from KBEDebug import *
 
 
-class TEntityFrame(list):
+class FS_EntityData(list):
     """
     """
     def __init__(self):
@@ -24,20 +24,20 @@ class TEntityFrame(list):
         return self
 
 
-class ENTITY_DATA_PICKLER:
+class FS_ENTITY_DATA_PICKLER:
     def __init__(self):
         pass
 
     def createObjFromDict(self, dict):
-        return TEntityFrame().createFromDict(dict)
+        return FS_EntityData().createFromDict(dict)
 
     def getDictFromObj(self, obj):
         return obj.asDict()
 
     def isSameType(self, obj):
-        return isinstance(obj, TEntityFrame)
+        return isinstance(obj, FS_EntityData)
 
 
-inst = ENTITY_DATA_PICKLER()
+inst = FS_ENTITY_DATA_PICKLER()
 
 

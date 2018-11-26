@@ -7,13 +7,13 @@
 			<Default>		0				</Default>
 		</state>
 
-		<farmeId>
+		<farmeID>
 			<Type>			FRAMEID			</Type>
 			<Flags>			CELL_PUBLIC		</Flags>
-		</farmeId>
+		</farmeID>
 
 		<framePool>
-			<Type>			FRAME_LIST			</Type>
+			<Type>			FS_FRAME_LIST			</Type>
 			<Flags>			CELL_PUBLIC			</Flags>
 		</framePool>
 
@@ -40,7 +40,7 @@
 
 		<reportFrame>
 		    <Arg>       ENTITYCALL      </Arg>
-            <Arg>       ENTITY_DATA      </Arg>
+            <Arg>       FS_ENTITY_DATA      </Arg>
         </reportFrame>
 
 	</CellMethods>

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import KBEngine
-import GlobalDefine
 from KBEDebug import *
 
 class OperationSync(KBEngine.EntityComponent):

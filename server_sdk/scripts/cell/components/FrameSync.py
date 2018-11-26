@@ -1,16 +1,28 @@
 # -*- coding: utf-8 -*-
 import KBEngine
-import GlobalDefine
 from KBEDebug import *
 
 import math
 import time
 import copy
-import SCDefine
 
 from ENTITY_DATA import TEntityFrame
 from FRAME_DATA import TFrameData
 from FRAME_LIST import TFrameList
+
+
+# ------------------------------------------------------------------------------
+# frame state
+# ------------------------------------------------------------------------------
+
+FS_STATE_FREE  		= 0
+FS_STATE_RUNNING 	= 1
+FS_STATE_STOP 		= 2
+
+# ------------------------------------------------------------------------------
+# frame state
+# ------------------------------------------------------------------------------
+FS_TIMER_TYPE_DESTROY									= 99999999 # 延时销毁entity
 
 
 class FrameSync(KBEngine.EntityComponent):
@@ -35,7 +47,7 @@ class FrameSync(KBEngine.EntityComponent):
 		'''
 		初始化帧的数据
 		'''
-		self.farmeId = 1
+		self.farmeID = 1
 		operation = TEntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
 		self.emptyFrame = TFrameData().createFromDict({"frameid":0,"operation":[operation]})
 		self.currFrame = copy.deepcopy(self.emptyFrame)
@@ -46,7 +58,7 @@ class FrameSync(KBEngine.EntityComponent):
 		引擎回调timer触发
 		"""
 		DEBUG_MSG("%s::onTimer: %i, tid:%i, arg:%i" % (self.getScriptName(), self.id, tid, userArg))
-		if userArg == SCDefine.TIMER_TYPE_SPACE_TICK:
+		if userArg == FS_TIMER_TYPE_DESTROY:
 			self.broadFrame()
 
 
@@ -80,22 +92,22 @@ class FrameSync(KBEngine.EntityComponent):
 		"""
 		开始帧同步
 		"""
-		self.addTimer(1,0.00001,SCDefine.TIMER_TYPE_SPACE_TICK)
+		self.addTimer(1,0.00001,FS_TIMER_TYPE_DESTROY)
 		
-		self.state = GlobalDefine.FRAME_STATE_RUNNING
+		self.state = FS_STATE_RUNNING
 
 	def stop(self):
 		"""
 		停止帧同步
 		"""
-		if self.state == GlobalDefine.FRAME_STATE_RUNNING:
-			self.state = GlobalDefine.FRAME_STATE_STOP
+		if self.state == FS_STATE_RUNNING:
+			self.state = FS_STATE_STOP
 
 	def reportFrame(self,entityCall, framedata):
 		"""
 		添加数据帧
 		"""		
-		if entityCall is None or self.state != GlobalDefine.FRAME_STATE_RUNNING:
+		if entityCall is None or self.state != FS_STATE_RUNNING:
 			return
 
 		operation = TEntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
@@ -109,21 +121,21 @@ class FrameSync(KBEngine.EntityComponent):
 		"""
 		广播逻辑帧
 		"""
-		if self.state != GlobalDefine.FRAME_STATE_RUNNING:
+		if self.state != FRAME_SYNC_STATE_RUNNING:
 			return
 
-		self.currFrame[0] = self.farmeId
-		self.framePool[self.farmeId] = self.currFrame
+		self.currFrame[0] = self.farmeID
+		self.framePool[self.farmeID] = self.currFrame
 
 		for e in self.avatars.values():
 			if e is None or e.client is None:
 				continue
-			for frameid in range(e.frameId,self.spaceFarmeId):
+			for frameid in range(e.farmeID,self.farmeID):
 				e.component1.client.onFrameMessage(self.framePool[frameid+1])
 				
-			e.component1.frameId = self.farmeId
+			e.component1.farmeID = self.farmeID
 
 		
 		self.currFrame = copy.deepcopy(self.emptyFrame)
-		self.farmeId += 1
+		self.farmeID += 1
 
