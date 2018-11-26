@@ -1,32 +1,22 @@
-这是一个KBEngine服务端资产库
+这是一个KBEngine 服务器帧同步组件开发包
 ========
 
-##启动服务端
+##配置文件
 
-使用固定参数来启动：(参数的意义:http://www.kbengine.org/cn/docs/startup_shutdown.html)
+使用<gameUpdateHertz> 30 </gameUpdateHertz> 频率参数
 	
-	Linux:
-		start_server.sh
-
-	Windows:
-		start_server.bat
+<baseapp>/<externalUdpPorts_min> 和 <externalUdpPorts_max> 配置UDP端口，使用UDP通信
 
 
-##关闭服务端
+##包目录
 
-快速杀死服务端进程:
+cell: cell 部分下的组件目录 
 
-	Linux:
-		kill_server.sh
+entity_defs: 定义的组件声明目录
 
-	Windows:
-		kill_server.bat
+user_type: 定义的组件数据类型目录
 
 
-如果是正式运营环境，应该使用安全的关闭方式，这种方式能够确保数据安全的存档，安全的告诉用户下线等等。
+如果需要用到帧同步,请将相对应的目录添加到您的对应的资产文件夹下面。
 
-	Linux:
-		safe_kill.sh
-
-	Windows:
-		safe_kill.bat
+使用时只需要将改组件加载到对应的 entity 即可使用
