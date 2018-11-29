@@ -6,7 +6,7 @@ import math
 import time
 import copy
 
-from FS_ENTITY_DATA import FS_EntityFrame
+from FS_ENTITY_DATA import FS_EntityData
 from FS_FRAME_DATA import FS_FrameData
 from FS_FRAME_LIST import FS_FrameList
 
@@ -31,15 +31,16 @@ class FrameSyncMgr(KBEngine.Entity):
 
 		self.players = {}
 
-		KBEngine.globalData["FrameSyncMgr_%i" % self.spaceID] = self
+		KBEngine.cellAppData["FrameSyncMgr_%i" % self.spaceID] = self
 
+		self.initFrameData()
 
 	def initFrameData(self):
 		'''
 		初始化帧的数据
 		'''
 		self.farmeID = 1
-		operation = FS_EntityFrame().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
+		operation = FS_EntityData().createFromDict({"entityid":0,"cmd_type":0,"datas":b''})
 		self.emptyFrame = FS_FrameData().createFromDict({"frameid":0,"operation":[operation]})
 		self.currFrame = copy.deepcopy(self.emptyFrame)
 		
@@ -48,7 +49,7 @@ class FrameSyncMgr(KBEngine.Entity):
 		KBEngine method.
 		引擎回调timer触发
 		"""
-		DEBUG_MSG("%s::onTimer: %i, tid:%i, arg:%i" % (self.getScriptName(), self.id, tid, userArg))
+		#DEBUG_MSG("FrameSyncMgr::onTimer: %i, tid:%i, arg:%i" % (self.id, tid, userArg))
 		if userArg == FS_TIMER_TYPE_DESTROY:
 			self.broadFrame()
 
@@ -59,7 +60,7 @@ class FrameSyncMgr(KBEngine.Entity):
 		添加玩家
 		"""
 
-		DEBUG_MSG('Space::onEnter space[%d] entityID = %i.' % (self.spaceID, frameSyncComponent.ownerID))
+		DEBUG_MSG('FrameSyncMgr::onEnter Room[%d] entityID = %i.' % (self.spaceID, frameSyncComponent.ownerID))
 
 		
 
@@ -74,7 +75,7 @@ class FrameSyncMgr(KBEngine.Entity):
 		移除玩家
 		"""
 
-		DEBUG_MSG('Space::onLeave space[%d] entityID = %i.' % (self.spaceID, entityID))
+		DEBUG_MSG('FrameSyncMgr::onLeave Room[%d] entityID = %i.' % (self.spaceID, entityID))
 		
 		if entityID in self.players:
 			del self.players[entityID]
@@ -83,6 +84,9 @@ class FrameSyncMgr(KBEngine.Entity):
 		"""
 		开始帧同步
 		"""
+		if self.state == FS_STATE_RUNNING:
+			return
+			
 		self.addTimer(1,0.00001,FS_TIMER_TYPE_DESTROY)
 		
 		self.state = FS_STATE_RUNNING
@@ -101,12 +105,14 @@ class FrameSyncMgr(KBEngine.Entity):
 		if entityCall is None or self.state != FS_STATE_RUNNING:
 			return
 
-		operation = FS_EntityFrame().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
+		operation = FS_EntityData().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
 
 		if self.currFrame[0] <= 0:			
 			self.currFrame[1] = [operation]
 		else:
 			self.currFrame[1].append(operation)	
+
+		#DEBUG_MSG('------------FrameSyncMgr::reportFrame self.currFrame = %s.' % (self.currFrame))
 
 	def broadFrame(self):
 		"""
@@ -118,13 +124,15 @@ class FrameSyncMgr(KBEngine.Entity):
 		self.currFrame[0] = self.farmeID
 		self.framePool[self.farmeID] = self.currFrame
 
+
 		for p in self.players.values():
 			for frameid in range(p.farmeID,self.farmeID):
 				p.client.onFrameMessage(self.framePool[frameid+1])
 				
 			p.farmeID = self.farmeID
 
-		
+		#DEBUG_MSG('FrameSyncMgr::broadFrame self.currFrame = %s.' % (self.currFrame))
+
 		self.currFrame = copy.deepcopy(self.emptyFrame)
 		self.farmeID += 1
 

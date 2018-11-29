@@ -16,9 +16,9 @@ namespace KBEngine
 
 		public abstract void Deserialize(byte[] data, ref int offset);
 
-        public abstract ENTITY_DATA Serialize();
+        public abstract FS_ENTITY_DATA Serialize();
 
-        public abstract void Deserialize(ENTITY_DATA e);
+        public abstract void Deserialize(FS_ENTITY_DATA e);
 
         public abstract bool EqualsData(InputDataBase otherBase);
 

@@ -249,10 +249,10 @@ namespace KBEngine {
         }
 
         /**
-         * @brief Deserialize from ENTITY_DATA.
+         * @brief Deserialize from FS_ENTITY_DATA.
          **/
 
-        public override void Deserialize(ENTITY_DATA e)
+        public override void Deserialize(FS_ENTITY_DATA e)
         {
             if(e.entityid <=0)
             {
@@ -267,13 +267,13 @@ namespace KBEngine {
 
         }
         /**
-         * @brief Serialize data to ENTITY_DATA.
+         * @brief Serialize data to FS_ENTITY_DATA.
          **/
-        public override ENTITY_DATA Serialize()
+        public override FS_ENTITY_DATA Serialize()
         {
             List<byte> data = new List<byte>();
             Serialize(data);
-            ENTITY_DATA e = new ENTITY_DATA();
+            FS_ENTITY_DATA e = new FS_ENTITY_DATA();
             e.entityid = ownerID;
             e.datas = data.ToArray();
             return e;

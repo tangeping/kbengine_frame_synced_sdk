@@ -7,11 +7,11 @@ namespace KBEngine
 {
     public class SpaceData : CBSingleton<SpaceData>
     {
-        public Entity localPlayer = null;
+        public FrameSyncReportBase localPlayer = null;
 
-        public List<Entity> SpacePlayers = new List<Entity>();
+        public List<FrameSyncReportBase> SpacePlayers = new List<FrameSyncReportBase>();
 
-        public Queue<FRAME_DATA> frameList = new Queue<FRAME_DATA>();
+        public Queue<FS_FRAME_DATA> frameList = new Queue<FS_FRAME_DATA>();
   
     }
 }

@@ -11,7 +11,7 @@ class FrameSyncReport(KBEngine.EntityComponent):
 		"""
 		INFO_MSG("Operation::onAttached(): owner=%i" % (owner.id))
 
-		getFrameSyncMgr().addPlayer(self)
+		self.getFrameSyncMgr().addPlayer(self)
 
 	def onDetached(self, owner):
 		"""
@@ -26,18 +26,18 @@ class FrameSyncReport(KBEngine.EntityComponent):
 		"""
 		获得当前space的entity baseEntityCall
 		"""
-		return KBEngine.cellAppData.get("FrameSync_%i" % self.spaceID,None)
+		return KBEngine.cellAppData.get("FrameSyncMgr_%i" % self.owner.spaceID,None)
 
 	def reportFrame(self,exposed,framedata):
 		"""
 		上传操作帧
 		"""
-		if exposed != self.id:
+		if exposed != self.ownerID:
 			return
 
 		self.getFrameSyncMgr().reportFrame(self.owner,framedata)
 
-
+		DEBUG_MSG("reportFrame.%i framedata:%s" % (self.ownerID,str(framedata)))
 
 
 

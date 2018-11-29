@@ -28,6 +28,9 @@
             <Arg>       FS_ENTITY_DATA      </Arg>
         </reportFrame>
 
+		<getFrameSyncMgr>
+        </getFrameSyncMgr>
+
 	</CellMethods>
 
 	<ClientMethods>

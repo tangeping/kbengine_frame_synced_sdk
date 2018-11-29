@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FrameSyncManager : MonoBehaviour {
 
-    private const string serverSettingsAssetFile = "FrameSyncGlobalConfig";
+    private const string serverSettingsAssetFile = "FrameSyncConfig";
 
     private static FrameSyncConfig _FrameSyncGlobalConfig; //配置文件
 
@@ -148,7 +148,7 @@ public class FrameSyncManager : MonoBehaviour {
     {
         for (int i = 0; i < SpaceData.Instance.SpacePlayers.Count; i++)
         {
-            Entity entity = SpaceData.Instance.SpacePlayers[i];
+            Entity entity = SpaceData.Instance.SpacePlayers[i].owner;
 
             GameObject perfab = GameObject.Instantiate(playerPerfab) as GameObject;
             perfab.name = entity.className + "_" + entity.id;
@@ -163,7 +163,7 @@ public class FrameSyncManager : MonoBehaviour {
                 FrameSyncBehaviour bh = behaviours[index];
 
                 bh.owner = entity;
-                bh.localOwner = SpaceData.Instance.localPlayer;
+                bh.localOwner = SpaceData.Instance.localPlayer.owner;
                 bh.numberOfPlayers = SpaceData.Instance.SpacePlayers.Count;
                 playerBehaviours.Add(NewManagedBehavior((IFrameSyncBehaviour)bh));
             }
@@ -430,6 +430,8 @@ public class FrameSyncManager : MonoBehaviour {
         PhysicsManager.New(Config);
         PhysicsManager.instance.LockedTimeStep = Config.lockedTimeStep;
         PhysicsManager.instance.Init();
+
+        CreatePlayer();
     }
 	
 	// Update is called once per frame
@@ -441,12 +443,14 @@ public class FrameSyncManager : MonoBehaviour {
         {
             RenderTime = 0;
 
-            if(SpaceData.Instance.frameList.Count > 0)
+            OnUpateInputData();
+
+            if (SpaceData.Instance.frameList.Count > 0)
             {
                 int count = SpaceData.Instance.frameList.Count;
                 TimeSlice = DeltaTime / (count <= ThresholdFrame ? 1 : count / ThresholdFrame);
 
-                FRAME_DATA framedata = SpaceData.Instance.frameList.Dequeue();
+                FS_FRAME_DATA framedata = SpaceData.Instance.frameList.Dequeue();
 
                 List<InputDataBase> allInputData = new List<InputDataBase>();
 
@@ -455,7 +459,7 @@ public class FrameSyncManager : MonoBehaviour {
                     for (int i = 0; i < SpaceData.Instance.SpacePlayers.Count; i++)
                     {
                         InputData data = new InputData();
-                        data.ownerID = SpaceData.Instance.SpacePlayers[i].id;
+                        data.ownerID = SpaceData.Instance.SpacePlayers[i].ownerID;
                         allInputData.Add(data);
                     }
                 }
@@ -463,7 +467,7 @@ public class FrameSyncManager : MonoBehaviour {
                 {
                     for (int i = 0; i < framedata.operation.Count; i++)
                     {
-                        ENTITY_DATA e = framedata.operation[i];
+                        FS_ENTITY_DATA e = framedata.operation[i];
                         InputData data = new InputData();
                         data.Deserialize(e);
                         allInputData.Add(data);
@@ -502,11 +506,13 @@ public class FrameSyncManager : MonoBehaviour {
     {
         InputData data = new InputData();
 
-        data.ownerID = SpaceData.Instance.localPlayer.id;
+        data.ownerID = SpaceData.Instance.localPlayer.ownerID;
 
         GetLocalData(data);
 
-        KBEngine.Event.fireIn("reqFrameChange", data.Serialize());
+        KBEngine.Event.fireIn("reportFrame", data.Serialize());
+
+        //Debug.Log("data count:" + data.Count);
     }
 
     void OnStepUpdate(List<InputDataBase> allInputData)
