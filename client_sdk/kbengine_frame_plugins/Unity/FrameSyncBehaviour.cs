@@ -177,6 +177,20 @@ namespace KBEngine {
          **/
         public virtual void OnPlayerDisconnection(int playerId) {}
 
+        /**
+         *  @brief render frame data.
+         *  
+         *  Called once every unity update.
+         */
+        public virtual void OnRenderStart() { }
+
+        /**
+         *  @brief render end.
+         *  
+         *  Called once every frame end.
+         */
+        public virtual void OnRenderEnded() { }
+
     }
 
 }

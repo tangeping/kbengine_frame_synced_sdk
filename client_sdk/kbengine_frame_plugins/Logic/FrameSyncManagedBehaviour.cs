@@ -265,6 +265,24 @@ namespace KBEngine
             }
         }
 
+        public void OnRenderStart()
+        {
+            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
+            if (flag)
+            {
+                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderStart();
+            }
+        }
+
+        public void OnRenderEnded()
+        {
+            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
+            if (flag)
+            {
+                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderEnded();
+            }
+        }
+
         #endregion IFrameSyncBehaviourCallbacks 接口方法
     }
 }
