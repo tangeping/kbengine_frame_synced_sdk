@@ -150,10 +150,7 @@ public class FrameSyncManager : MonoBehaviour {
         {
             Entity entity = SpaceData.Instance.SpacePlayers[i].owner;
 
-            GameObject perfab = GameObject.Instantiate(playerPerfab) as GameObject;
-            perfab.name = entity.className + "_" + entity.id;
-
-            AddPlayer(perfab, entity);
+            AddPlayer(playerPerfab, entity);
         }
     }
     /**
@@ -161,21 +158,36 @@ public class FrameSyncManager : MonoBehaviour {
      * @param playerPerfab GameObject's prefab to instantiate.
      * @param e is kbengine.entity to communicate  client.
      **/
-    public static void AddPlayer(GameObject playerPerfab,Entity e)
+    public static GameObject AddPlayer(GameObject go,Entity e)
     {
-        InitializeGameObject(playerPerfab,e.position.ToFPVector(), Quaternion.Euler(e.direction).ToFPQuaternion());
+        GameObject perfab = GameObject.Instantiate(go) as GameObject;
+        perfab.name = e.className + "_" + e.id;
+
+        InitPlayerBehaviour(perfab, e);
+
+        return perfab;
+    }
+
+    /**
+     * @brief add player FrameSyncManagedBehaviour to system.
+     * @param playerPerfab GameObject's prefab to instantiate.
+     * @param e is kbengine.entity to communicate  client.
+     **/
+
+    public static void InitPlayerBehaviour(GameObject go,Entity e)
+    {
+        InitializeGameObject(go, e.position.ToFPVector(), Quaternion.Euler(e.direction).ToFPQuaternion());
 
         List<FrameSyncManagedBehaviour> playerBehaviours = new List<FrameSyncManagedBehaviour>();
 
-        FrameSyncBehaviour[] behaviours = playerPerfab.GetComponentsInChildren<FrameSyncBehaviour>();
+        FrameSyncBehaviour[] behaviours = go.GetComponentsInChildren<FrameSyncBehaviour>();
         for (int index = 0; index < behaviours.Length; index++)
         {
             FrameSyncBehaviour bh = behaviours[index];
 
             bh.owner = e;
             bh.ownerIndex = e.id;
-            bh.localOwner = SpaceData.Instance.localPlayer.owner;
-            bh.numberOfPlayers = SpaceData.Instance.SpacePlayers.Count;
+            bh.localOwner = KBEngineApp.app.player();
             playerBehaviours.Add(instance.NewManagedBehavior((IFrameSyncBehaviour)bh));
         }
         instance.behaviorsByPlayer.Add(e.id, playerBehaviours);
