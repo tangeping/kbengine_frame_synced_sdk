@@ -193,11 +193,11 @@ namespace KBEngine
 			if (flag)
 			{
 				((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnSyncedStart();
-				bool flag2 = this.localOwner.Id == this.owner.Id;
-				if (flag2) // 本地玩家
-				{
-					((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnSyncedStartLocalPlayer();
-				}
+// 				bool flag2 = this.localOwner.Id == this.owner.Id;
+// 				if (flag2) // 本地玩家
+// 				{
+// 					((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnSyncedStartLocalPlayer();
+// 				}
 			}
 		}
 
@@ -246,6 +246,25 @@ namespace KBEngine
 				((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnPlayerDisconnection(playerId);
 			}
 		}
+
+        public void OnSyncedRenderStart()
+        {
+            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
+            if (flag)
+            {
+                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderStart();
+            }
+        }
+
+        public void OnSyncedRenderEnded()
+        {
+            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
+            if (flag)
+            {
+                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderEnded();
+            }
+        }
+
         #endregion IFrameSyncBehaviourCallbacks 接口方法
     }
 }

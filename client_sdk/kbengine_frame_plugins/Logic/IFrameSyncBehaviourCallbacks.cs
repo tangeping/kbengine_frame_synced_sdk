@@ -15,5 +15,9 @@ namespace KBEngine
 		void OnGameEnded();
 
 		void OnPlayerDisconnection(int playerId);
+
+        void OnRenderStart();
+
+        void OnRenderEnded();
 	}
 }

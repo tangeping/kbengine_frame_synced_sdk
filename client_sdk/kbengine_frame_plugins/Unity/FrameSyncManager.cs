@@ -135,7 +135,7 @@ public class FrameSyncManager : MonoBehaviour {
     {       
         for (int i = 0; i < Behaviors.Count; i++)
         {
-            if(Behaviors[i].Value == bh)
+            if(Behaviors[i].Key == bh)
             {
                 return i;
             }
@@ -153,26 +153,34 @@ public class FrameSyncManager : MonoBehaviour {
             GameObject perfab = GameObject.Instantiate(playerPerfab) as GameObject;
             perfab.name = entity.className + "_" + entity.id;
 
-            InitializeGameObject(perfab, entity.position.ToFPVector(), Quaternion.Euler(entity.direction).ToFPQuaternion());
-
-            List<FrameSyncManagedBehaviour> playerBehaviours = new List<FrameSyncManagedBehaviour>();
-
-            FrameSyncBehaviour[] behaviours = perfab.GetComponentsInChildren<FrameSyncBehaviour>();
-            for (int index = 0, length = behaviours.Length; index < length; index++)
-            {
-                FrameSyncBehaviour bh = behaviours[index];
-
-                bh.owner = entity;
-                bh.localOwner = SpaceData.Instance.localPlayer.owner;
-                bh.numberOfPlayers = SpaceData.Instance.SpacePlayers.Count;
-                playerBehaviours.Add(NewManagedBehavior((IFrameSyncBehaviour)bh));
-            }
-
-            behaviorsByPlayer.Add(entity.id, playerBehaviours);
+            AddPlayer(perfab, entity);
         }
     }
+    /**
+     * @brief add player  and bind entity to player.
+     * @param playerPerfab GameObject's prefab to instantiate.
+     * @param e is kbengine.entity to communicate  client.
+     **/
+    public static void AddPlayer(GameObject playerPerfab,Entity e)
+    {
+        InitializeGameObject(playerPerfab,e.position.ToFPVector(), Quaternion.Euler(e.direction).ToFPQuaternion());
 
- 
+        List<FrameSyncManagedBehaviour> playerBehaviours = new List<FrameSyncManagedBehaviour>();
+
+        FrameSyncBehaviour[] behaviours = playerPerfab.GetComponentsInChildren<FrameSyncBehaviour>();
+        for (int index = 0; index < behaviours.Length; index++)
+        {
+            FrameSyncBehaviour bh = behaviours[index];
+
+            bh.owner = e;
+            bh.ownerIndex = e.id;
+            bh.localOwner = SpaceData.Instance.localPlayer.owner;
+            bh.numberOfPlayers = SpaceData.Instance.SpacePlayers.Count;
+            playerBehaviours.Add(instance.NewManagedBehavior((IFrameSyncBehaviour)bh));
+        }
+        instance.behaviorsByPlayer.Add(e.id, playerBehaviours);
+    }
+
     /**
      * @brief Instantiates a new prefab in a deterministic way.
      * 
@@ -369,6 +377,8 @@ public class FrameSyncManager : MonoBehaviour {
                     DestroyFPRigidBody(tsCollider2D.gameObject, tsCollider2D.Body);
                 }
             }
+           
+            Destroy(gameObject);
         }
     }
 
@@ -400,8 +410,9 @@ public class FrameSyncManager : MonoBehaviour {
      **/
     private static void DestroyFPRigidBody(GameObject tsColliderGO, IBody body)
     {
+        instance.OnRemovedRigidBody(body);
+
         tsColliderGO.gameObject.SetActive(false);
-        //instance.lockstep.Destroy(body);
     }
 
     /**
@@ -423,6 +434,8 @@ public class FrameSyncManager : MonoBehaviour {
         instance = this;
 
         lockedTimeStep = FrameSyncGlobalConfig.lockedTimeStep;
+
+        FPRandom.Init();
     }
 
     // Use this for initialization
@@ -432,16 +445,22 @@ public class FrameSyncManager : MonoBehaviour {
         PhysicsManager.instance.Init();
 
         CreatePlayer();
+
+        CheckQueuedBehaviours();
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        OnRenderStart();
 
         RenderTime += Time.deltaTime;
 
         if(RenderTime >= TimeSlice)
         {
             RenderTime = 0;
+
+            OnRenderEnd();
 
             OnUpateInputData();
 
@@ -515,6 +534,63 @@ public class FrameSyncManager : MonoBehaviour {
         //Debug.Log("data count:" + data.Count);
     }
 
+    void OnRenderStart()
+    {
+        foreach (var item in behaviorsByPlayer)
+        {
+            List<FrameSyncManagedBehaviour> fsmb = item.Value;
+            for (int index = 0, length = fsmb.Count; index < length; index++)
+            {
+                FrameSyncManagedBehaviour bh = fsmb[index];
+
+                if (bh != null && !bh.disabled)
+                {
+                    bh.OnSyncedRenderStart();
+                }
+            }
+        }
+
+        for (int index = 0; index < mapManagedBehaviors.Count; index++)
+        {
+            FrameSyncManagedBehaviour bh = mapManagedBehaviors[index].Value;
+
+            if (bh != null && !bh.disabled)
+            {
+                bh.OnSyncedRenderStart();
+            }
+        }
+
+    }
+
+    void OnRenderEnd()
+    {
+        foreach (var item in behaviorsByPlayer)
+        {
+            List<FrameSyncManagedBehaviour> fsmb = item.Value;
+            for (int index = 0, length = fsmb.Count; index < length; index++)
+            {
+                FrameSyncManagedBehaviour bh = fsmb[index];
+
+                if (bh != null && !bh.disabled)
+                {
+                    bh.OnSyncedRenderEnded();
+                }
+            }
+        }
+
+        for (int index = 0; index < mapManagedBehaviors.Count; index++)
+        {
+            FrameSyncManagedBehaviour bh = mapManagedBehaviors[index].Value;
+
+            if (bh != null && !bh.disabled)
+            {
+                bh.OnSyncedRenderEnded();
+            }
+        }
+
+    }
+
+
     void OnStepUpdate(List<InputDataBase> allInputData)
     {
         FrameSyncInput.SetAllInputs(allInputData);
@@ -563,6 +639,8 @@ public class FrameSyncManager : MonoBehaviour {
 
         if (go != null)
         {
+            PhysicsManager.instance.RemoveBody(body);
+
             List<FrameSyncBehaviour> behavioursToRemove = new List<FrameSyncBehaviour>(go.GetComponentsInChildren<FrameSyncBehaviour>());
 
             for (int i = 0; i < behavioursToRemove.Count; i++)
@@ -576,35 +654,50 @@ public class FrameSyncManager : MonoBehaviour {
                 }
             }
 
-
-            var behaviorsByPlayerEnum = behaviorsByPlayer.GetEnumerator();
-            while (behaviorsByPlayerEnum.MoveNext())
+            foreach (var item in behaviorsByPlayer)
             {
-                List<FrameSyncManagedBehaviour> listBh = behaviorsByPlayerEnum.Current.Value;
+                List<FrameSyncManagedBehaviour> listBh = item.Value;
                 RemoveFromTSMBList(listBh, behavioursToRemove);
             }
         }
     }
 
-    private void RemoveFromTSMBList(List<FrameSyncManagedBehaviour> tsmbList, List<FrameSyncBehaviour> behaviours)
+    private void RemoveFromTSMBList(List<FrameSyncManagedBehaviour> fsmbList, List<FrameSyncBehaviour> behaviours)
     {
         List<FrameSyncManagedBehaviour> toRemove = new List<FrameSyncManagedBehaviour>();
-        for (int index = 0, length = tsmbList.Count; index < length; index++)
+        for (int j = 0; j < fsmbList.Count; j++)
         {
-            FrameSyncManagedBehaviour tsmb = tsmbList[index];
+            FrameSyncManagedBehaviour fsmb = fsmbList[j];
 
-            if ((tsmb.FrameSyncBehavior is FrameSyncBehaviour) && behaviours.Contains((FrameSyncBehaviour)tsmb.FrameSyncBehavior))
+            if ((fsmb.FrameSyncBehavior is FrameSyncBehaviour) && behaviours.Contains((FrameSyncBehaviour)fsmb.FrameSyncBehavior))
             {
-                toRemove.Add(tsmb);
+                toRemove.Add(fsmb);
             }
         }
 
-        for (int index = 0, length = toRemove.Count; index < length; index++)
+        for (int i = 0; i < toRemove.Count; i++)
         {
-            FrameSyncManagedBehaviour tsmb = toRemove[index];
-            tsmbList.Remove(tsmb);
+            FrameSyncManagedBehaviour tsmb = toRemove[i];
+            fsmbList.Remove(tsmb);
         }
     }
 
+    private void CheckQueuedBehaviours()
+    {
+        foreach (var bhList in behaviorsByPlayer)
+        {          
+            for (int i = 0; i < bhList.Value.Count; i++)
+            {
+                FrameSyncManagedBehaviour playerBehaviour = (bhList.Value)[i];
+                playerBehaviour.OnSyncedStart();
+            }
+        }
+
+        for (int j = 0; j < mapManagedBehaviors.Count; j++)
+        {
+            FrameSyncManagedBehaviour fsmb = mapManagedBehaviors[j].Value;
+            fsmb.OnSyncedStart();
+        }
+    }
 
 }
