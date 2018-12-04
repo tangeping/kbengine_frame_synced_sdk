@@ -37,7 +37,7 @@ class FrameSyncReport(KBEngine.EntityComponent):
 
 		self.getFrameSyncMgr().reportFrame(self.owner,framedata)
 
-		DEBUG_MSG("reportFrame.%i framedata:%s" % (self.ownerID,str(framedata)))
+		#DEBUG_MSG("reportFrame.%i framedata:%s" % (self.ownerID,str(framedata)))
 
 
 

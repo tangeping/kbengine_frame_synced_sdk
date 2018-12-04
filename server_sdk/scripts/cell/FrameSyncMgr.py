@@ -131,7 +131,7 @@ class FrameSyncMgr(KBEngine.Entity):
 				
 			p.farmeID = self.farmeID
 
-		#DEBUG_MSG('FrameSyncMgr::broadFrame self.currFrame = %s.' % (self.currFrame))
+		DEBUG_MSG('FrameSyncMgr::broadFrame self.currFrame = %s.' % (self.currFrame))
 
 		self.currFrame = copy.deepcopy(self.emptyFrame)
 		self.farmeID += 1
