@@ -354,6 +354,7 @@ public class FrameSyncManager : MonoBehaviour {
                     }
                 }
             }
+            instance.behaviorsByPlayer.Remove(playerId);
         }
     }
 
@@ -456,13 +457,25 @@ public class FrameSyncManager : MonoBehaviour {
         PhysicsManager.instance.LockedTimeStep = Config.lockedTimeStep;
         PhysicsManager.instance.Init();
 
-        CreatePlayer();
+       // CreatePlayer();
 
         CheckQueuedBehaviours();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    FP duration;
+    private void FixedUpdate()
+    {
+        duration += Time.deltaTime;
+
+        if(duration*30 >= 1)
+        {
+            duration = 0;
+            OnUpateInputData();
+        }
+    }
+
+    // Update is called once per frame
+    void Update () {
 
         OnRenderStart();
 
@@ -474,7 +487,7 @@ public class FrameSyncManager : MonoBehaviour {
 
             OnRenderEnd();
 
-            OnUpateInputData();
+            //OnUpateInputData();
 
             if (SpaceData.Instance.frameList.Count > 0)
             {
@@ -541,9 +554,13 @@ public class FrameSyncManager : MonoBehaviour {
 
         GetLocalData(data);
 
-        KBEngine.Event.fireIn("reportFrame", data.Serialize());
+        if(data.Count > 0)
+        {
+            KBEngine.Event.fireIn("reportFrame", data.Serialize());
 
-        //Debug.Log("data count:" + data.Count);
+
+        }
+        
     }
 
     void OnRenderStart()

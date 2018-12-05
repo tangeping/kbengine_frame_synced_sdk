@@ -18,7 +18,7 @@ class FrameSyncReport(KBEngine.EntityComponent):
 		"""
 		INFO_MSG("Operation::onDetached(): owner=%i" % (owner.id))
 
-		frameSyncMgr = getFrameSyncMgr()
+		frameSyncMgr = self.getFrameSyncMgr()
 		if frameSyncMgr is not None:
 			frameSyncMgr.removePlayer(owner.id)
 
@@ -35,9 +35,11 @@ class FrameSyncReport(KBEngine.EntityComponent):
 		if exposed != self.ownerID:
 			return
 
+		#DEBUG_MSG("------FrameSyncReport------reportFrame.%i framedata:%s" % (self.ownerID,str(framedata)))
+
 		self.getFrameSyncMgr().reportFrame(self.owner,framedata)
 
-		#DEBUG_MSG("reportFrame.%i framedata:%s" % (self.ownerID,str(framedata)))
+		
 
 
 

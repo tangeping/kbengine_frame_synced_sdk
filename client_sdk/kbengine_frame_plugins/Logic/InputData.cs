@@ -633,6 +633,61 @@ namespace KBEngine {
             return this.FPVectorTable2.ContainsKey(key);
         }
 
+        public override string ToString()
+        {
+            string formatStr = string.Empty;
+
+            formatStr += ("stringTable." + stringTable.Count + ":{");
+            foreach (var str_item in stringTable)
+            {
+                formatStr += (str_item.Key + ":" + str_item.Value);
+            }
+            formatStr += "},";
+
+            formatStr += ("byteTable." + byteTable.Count + ":{");
+            foreach (var byte_item in byteTable)
+            {
+                formatStr += (byte_item.Key + ":" + byte_item.Value);
+            }
+            formatStr += "},";
+
+            formatStr += ("intTable." + intTable.Count + ":{");
+            foreach (var int_item in intTable)
+            {
+                formatStr += (int_item.Key + ":" + int_item.Value);
+            }
+            formatStr += "},";
+
+            formatStr += ("fpTable." + fpTable.Count + ":{");
+            foreach (var fp_item in fpTable)
+            {
+                formatStr += (fp_item.Key + ":" + fp_item.Value);
+            }
+            formatStr += "},";
+
+            formatStr += ("byteArrayTable." + byteArrayTable.Count + ":{");
+            foreach (var byteArray_item in byteArrayTable)
+            {
+                formatStr += (byteArray_item.Key + ":" + byteArray_item.Value);
+            }
+            formatStr += "},";
+
+            formatStr += ("FPVectorTable." + FPVectorTable.Count + ":{");
+            foreach (var FPVector_item in FPVectorTable)
+            {
+                formatStr += (FPVector_item.Key + ":" + FPVector_item.Value);
+            }
+            formatStr += "},";
+
+            formatStr += ("FPVectorTable2." + FPVectorTable2.Count + ":{");
+            foreach (var FPVector2_item in FPVectorTable2)
+            {
+                formatStr += (FPVector2_item.Key + ":" + FPVector2_item.Value);
+            }
+            formatStr += "},";
+
+            return formatStr;
+        }
     }
 
 }

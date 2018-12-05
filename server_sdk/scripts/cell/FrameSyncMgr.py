@@ -87,7 +87,7 @@ class FrameSyncMgr(KBEngine.Entity):
 		if self.state == FS_STATE_RUNNING:
 			return
 			
-		self.addTimer(1,0.00001,FS_TIMER_TYPE_DESTROY)
+		self.addTimer(0.00001,0.00001,FS_TIMER_TYPE_DESTROY)
 		
 		self.state = FS_STATE_RUNNING
 
@@ -107,12 +107,15 @@ class FrameSyncMgr(KBEngine.Entity):
 
 		operation = FS_EntityData().createFromDict({"entityid":framedata[0],"cmd_type":framedata[1],"datas":framedata[2]})
 
-		if self.currFrame[0] <= 0:			
+		if self.currFrame == self.emptyFrame:
 			self.currFrame[1] = [operation]
 		else:
+			for oper in self.currFrame[1]:
+				if entityCall.id == oper[0]:#如果已经有操作了，过滤掉多余的操作
+					return
 			self.currFrame[1].append(operation)	
 
-		#DEBUG_MSG('------------FrameSyncMgr::reportFrame self.currFrame = %s.' % (self.currFrame))
+		#DEBUG_MSG('------------FrameSyncMgr::reportFrame framedata=%s ,self.currFrame = %s.' % (framedata, self.currFrame))
 
 	def broadFrame(self):
 		"""
