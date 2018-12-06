@@ -500,6 +500,11 @@ public class FrameSyncManager : MonoBehaviour {
 
                 if (framedata.operation.Count <= 1 && framedata.operation[0].cmd_type == 0)
                 {
+                    if(Config.filterEmptyFrame)//如果配置了 filterEmptyFrame= True ,过滤掉空帧
+                    {
+                        return;
+                    }
+
                     for (int i = 0; i < SpaceData.Instance.SpacePlayers.Count; i++)
                     {
                         InputData data = new InputData();

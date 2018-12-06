@@ -33,5 +33,6 @@ MonoBehaviour:
       _serializedValue: 0
   speculativeContacts3D: 0
   showStats: 0
+  filterEmptyFrame: 0
   lockedTimeStep:
     _serializedValue: 85899344

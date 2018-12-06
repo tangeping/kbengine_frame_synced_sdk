@@ -65,6 +65,8 @@ namespace KBEngine {
 
             settings.showStats = EditorGUILayout.Toggle("Show Stats", settings.showStats);
 
+            settings.filterEmptyFrame = EditorGUILayout.Toggle("filter Empty Frame", settings.filterEmptyFrame);
+
             EditorGUI.indentLevel--;
 
             GUILayout.Space(10);
