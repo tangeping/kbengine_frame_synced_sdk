@@ -166,6 +166,13 @@ namespace KBEngine {
         public virtual void OnSyncedUpdate() { }
 
         /**
+         *  @brief Game render start goes here.
+         *  
+         *  Called once every lockstepped frame.
+         */
+        public virtual void OnFrameRenderStart() { }
+
+        /**
          *  @brief Get local player data.
          *  
          *  Called once every lockstepped frame.
@@ -182,14 +189,14 @@ namespace KBEngine {
          *  
          *  Called once every unity update.
          */
-        public virtual void OnRenderStart() { }
+        public virtual void OnFrameRenderUpdate() { }
 
         /**
          *  @brief render end.
          *  
          *  Called once every frame end.
          */
-        public virtual void OnRenderEnded() { }
+        public virtual void OnFrameRenderEnded() { }
 
     }
 

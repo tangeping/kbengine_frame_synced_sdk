@@ -61,15 +61,6 @@ public class FrameSyncManager : MonoBehaviour {
             return instance.renderTime;
         }
 
-        set
-        {
-            if (instance == null)
-            {
-                return ;
-            }
-
-            instance.renderTime = value;
-        }
     }
 
     public const int kThresholdMaxFrame = 30;
@@ -89,16 +80,16 @@ public class FrameSyncManager : MonoBehaviour {
         }
     }
 
-    public FP TimeSlice
+    public static FP TimeSlice
     {
         get
         {
-            return timeSlice;
-        }
+            if (instance == null)
+            {
+                return 0;
+            }
 
-        set
-        {
-            timeSlice = value;
+            return instance.timeSlice;
         }
     }
 
@@ -477,22 +468,22 @@ public class FrameSyncManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        OnRenderStart();
+        OnRenderUpdate();
 
-        RenderTime += Time.deltaTime;
+        renderTime += Time.deltaTime;
 
-        if(RenderTime >= TimeSlice)
+        if(renderTime >= timeSlice)
         {
-            RenderTime = 0;
+            renderTime = 0;
 
-            OnRenderEnd();
+            OnRenderEnded();
 
             //OnUpateInputData();
 
             if (SpaceData.Instance.frameList.Count > 0)
             {
                 int count = SpaceData.Instance.frameList.Count;
-                TimeSlice = DeltaTime / (count <= ThresholdFrame ? 1 : count / ThresholdFrame);
+                timeSlice = DeltaTime / (count <= ThresholdFrame ? 1 : count / ThresholdFrame);
 
                 FS_FRAME_DATA framedata = SpaceData.Instance.frameList.Dequeue();
 
@@ -568,7 +559,7 @@ public class FrameSyncManager : MonoBehaviour {
         
     }
 
-    void OnRenderStart()
+    void OnRenderUpdate()
     {
         foreach (var item in behaviorsByPlayer)
         {
@@ -579,7 +570,7 @@ public class FrameSyncManager : MonoBehaviour {
 
                 if (bh != null && !bh.disabled)
                 {
-                    bh.OnSyncedRenderStart();
+                    bh.OnFrameRenderUpdate();
                 }
             }
         }
@@ -590,13 +581,13 @@ public class FrameSyncManager : MonoBehaviour {
 
             if (bh != null && !bh.disabled)
             {
-                bh.OnSyncedRenderStart();
+                bh.OnFrameRenderUpdate();
             }
         }
 
     }
 
-    void OnRenderEnd()
+    void OnRenderEnded()
     {
         foreach (var item in behaviorsByPlayer)
         {
@@ -607,7 +598,7 @@ public class FrameSyncManager : MonoBehaviour {
 
                 if (bh != null && !bh.disabled)
                 {
-                    bh.OnSyncedRenderEnded();
+                    bh.OnFrameRenderEnded();
                 }
             }
         }
@@ -618,7 +609,7 @@ public class FrameSyncManager : MonoBehaviour {
 
             if (bh != null && !bh.disabled)
             {
-                bh.OnSyncedRenderEnded();
+                bh.OnFrameRenderEnded();
             }
         }
 
@@ -638,7 +629,7 @@ public class FrameSyncManager : MonoBehaviour {
 
             if (bh != null && !bh.disabled)
             {
-                bh.OnSyncedUpdate();
+                bh.OnFrameRenderStart();
             }
         }
 
@@ -657,7 +648,7 @@ public class FrameSyncManager : MonoBehaviour {
 
                     if (bh != null && !bh.disabled)
                     {
-                        bh.OnSyncedUpdate();
+                        bh.OnFrameRenderStart();
                     }
                 }
             }

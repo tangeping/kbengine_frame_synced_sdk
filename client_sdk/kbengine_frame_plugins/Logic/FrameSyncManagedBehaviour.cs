@@ -49,6 +49,16 @@ namespace KBEngine
 				((IFrameSyncBehaviourGamePlay)this.FrameSyncBehavior).OnSyncedUpdate();
 			}
 		}
+
+        public void OnFrameRenderStart()
+        {
+            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourGamePlay;
+            if (flag)
+            {
+                ((IFrameSyncBehaviourGamePlay)this.FrameSyncBehavior).OnFrameRenderStart();
+            }
+        }
+
         #endregion IFrameSyncBehaviourGamePlay 接口方法
 
         #region IFrameSyncBehaviour 接口方法
@@ -247,41 +257,25 @@ namespace KBEngine
 			}
 		}
 
-        public void OnSyncedRenderStart()
+        public void OnFrameRenderUpdate()
         {
             bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
             if (flag)
             {
-                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderStart();
+                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnFrameRenderUpdate();
             }
         }
 
-        public void OnSyncedRenderEnded()
+        public void OnFrameRenderEnded()
         {
             bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
             if (flag)
             {
-                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderEnded();
+                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnFrameRenderEnded();
             }
         }
 
-        public void OnRenderStart()
-        {
-            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
-            if (flag)
-            {
-                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderStart();
-            }
-        }
 
-        public void OnRenderEnded()
-        {
-            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
-            if (flag)
-            {
-                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnRenderEnded();
-            }
-        }
 
         #endregion IFrameSyncBehaviourCallbacks 接口方法
     }
