@@ -49,16 +49,6 @@ namespace KBEngine
 				((IFrameSyncBehaviourGamePlay)this.FrameSyncBehavior).OnSyncedUpdate();
 			}
 		}
-
-        public void OnFrameRenderStart()
-        {
-            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourGamePlay;
-            if (flag)
-            {
-                ((IFrameSyncBehaviourGamePlay)this.FrameSyncBehavior).OnFrameRenderStart();
-            }
-        }
-
         #endregion IFrameSyncBehaviourGamePlay 接口方法
 
         #region IFrameSyncBehaviour 接口方法
@@ -256,26 +246,6 @@ namespace KBEngine
 				((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnPlayerDisconnection(playerId);
 			}
 		}
-
-        public void OnFrameRenderUpdate()
-        {
-            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
-            if (flag)
-            {
-                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnFrameRenderUpdate();
-            }
-        }
-
-        public void OnFrameRenderEnded()
-        {
-            bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
-            if (flag)
-            {
-                ((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnFrameRenderEnded();
-            }
-        }
-
-
 
         #endregion IFrameSyncBehaviourCallbacks 接口方法
     }

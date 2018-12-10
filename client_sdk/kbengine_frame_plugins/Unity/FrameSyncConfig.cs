@@ -72,11 +72,6 @@ namespace KBEngine {
         public bool showStats = false;
 
         /**
-         * @brief When true filter a empty frame every frame update.
-         **/
-        public bool filterEmptyFrame = false;
-
-        /**
          * @brief Time between each FrameSync's frame.
          **/
         public FP lockedTimeStep = 0.02f;

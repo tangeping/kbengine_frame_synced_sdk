@@ -458,7 +458,7 @@ public class FrameSyncManager : MonoBehaviour {
     {
         duration += Time.deltaTime;
 
-        if(duration*30 >= 1)
+        if(duration >= DeltaTime)
         {
             duration = 0;
             OnUpateInputData();
@@ -468,7 +468,6 @@ public class FrameSyncManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        OnRenderUpdate();
 
         renderTime += Time.deltaTime;
 
@@ -476,9 +475,6 @@ public class FrameSyncManager : MonoBehaviour {
         {
             renderTime = 0;
 
-            OnRenderEnded();
-
-            //OnUpateInputData();
 
             if (SpaceData.Instance.frameList.Count > 0)
             {
@@ -491,11 +487,6 @@ public class FrameSyncManager : MonoBehaviour {
 
                 if (framedata.operation.Count <= 1 && framedata.operation[0].cmd_type == 0)
                 {
-                    if(Config.filterEmptyFrame)//如果配置了 filterEmptyFrame= True ,过滤掉空帧
-                    {
-                        return;
-                    }
-
                     for (int i = 0; i < SpaceData.Instance.SpacePlayers.Count; i++)
                     {
                         InputData data = new InputData();
@@ -553,67 +544,10 @@ public class FrameSyncManager : MonoBehaviour {
         if(data.Count > 0)
         {
             KBEngine.Event.fireIn("reportFrame", data.Serialize());
-
-
         }
         
     }
 
-    void OnRenderUpdate()
-    {
-        foreach (var item in behaviorsByPlayer)
-        {
-            List<FrameSyncManagedBehaviour> fsmb = item.Value;
-            for (int index = 0, length = fsmb.Count; index < length; index++)
-            {
-                FrameSyncManagedBehaviour bh = fsmb[index];
-
-                if (bh != null && !bh.disabled)
-                {
-                    bh.OnFrameRenderUpdate();
-                }
-            }
-        }
-
-        for (int index = 0; index < mapManagedBehaviors.Count; index++)
-        {
-            FrameSyncManagedBehaviour bh = mapManagedBehaviors[index].Value;
-
-            if (bh != null && !bh.disabled)
-            {
-                bh.OnFrameRenderUpdate();
-            }
-        }
-
-    }
-
-    void OnRenderEnded()
-    {
-        foreach (var item in behaviorsByPlayer)
-        {
-            List<FrameSyncManagedBehaviour> fsmb = item.Value;
-            for (int index = 0, length = fsmb.Count; index < length; index++)
-            {
-                FrameSyncManagedBehaviour bh = fsmb[index];
-
-                if (bh != null && !bh.disabled)
-                {
-                    bh.OnFrameRenderEnded();
-                }
-            }
-        }
-
-        for (int index = 0; index < mapManagedBehaviors.Count; index++)
-        {
-            FrameSyncManagedBehaviour bh = mapManagedBehaviors[index].Value;
-
-            if (bh != null && !bh.disabled)
-            {
-                bh.OnFrameRenderEnded();
-            }
-        }
-
-    }
 
 
     void OnStepUpdate(List<InputDataBase> allInputData)
@@ -629,7 +563,7 @@ public class FrameSyncManager : MonoBehaviour {
 
             if (bh != null && !bh.disabled)
             {
-                bh.OnFrameRenderStart();
+                bh.OnSyncedUpdate();
             }
         }
 
@@ -648,7 +582,7 @@ public class FrameSyncManager : MonoBehaviour {
 
                     if (bh != null && !bh.disabled)
                     {
-                        bh.OnFrameRenderStart();
+                        bh.OnSyncedUpdate();
                     }
                 }
             }

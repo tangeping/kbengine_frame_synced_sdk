@@ -9,7 +9,5 @@ namespace KBEngine
 		void OnSyncedInput();
 
 		void OnSyncedUpdate();
-
-        void OnFrameRenderStart();
 	}
 }
