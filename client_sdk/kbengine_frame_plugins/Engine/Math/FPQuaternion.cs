@@ -138,9 +138,16 @@ namespace KBEngine
                 dot = -dot;
             }
 
-            FP halfTheta = FP.Acos(dot);
+            if (dot < 0.95f)
+            {
+                FP halfTheta = FP.Acos(dot);
 
-            return Multiply(Multiply(from, FP.Sin((1 - t) * halfTheta)) + Multiply(to, FP.Sin(t * halfTheta)), 1 / FP.Sin(halfTheta));
+                return Multiply(Multiply(from, FP.Sin((1 - t) * halfTheta)) + Multiply(to, FP.Sin(t * halfTheta)), 1 / FP.Sin(halfTheta));
+            }
+            else
+            {
+                return Lerp(from, to, t);
+            }
         }
 
         public static FPQuaternion RotateTowards(FPQuaternion from, FPQuaternion to, FP maxDegreesDelta) {
@@ -264,7 +271,21 @@ namespace KBEngine
         }
 
         public static FPQuaternion LerpUnclamped(FPQuaternion a, FPQuaternion b, FP t) {
-            FPQuaternion result = FPQuaternion.Multiply(a, (1 - t)) + FPQuaternion.Multiply(b, t);
+
+            FPQuaternion tmpQuat;
+            // if (dot < 0), q1 and q2 are more than 360 deg apart.
+            // The problem is that quaternions are 720deg of freedom.
+            // so we - all components when lerping
+            if (Dot(a, b) < 0.0F)
+            {
+                tmpQuat = FPQuaternion.Multiply(b, -1);
+            }
+            else
+            {
+                tmpQuat = b;
+            }
+
+            FPQuaternion result = FPQuaternion.Multiply(a, (1 - t)) + FPQuaternion.Multiply(tmpQuat, t);
             result.Normalize();
 
             return result;
