@@ -62,8 +62,6 @@ class FrameSyncMgr(KBEngine.Entity):
 
 		DEBUG_MSG('FrameSyncMgr::onEnter Room[%d] entityID = %i.' % (self.spaceID, frameSyncComponent.ownerID))
 
-		
-
 		self.players[frameSyncComponent.ownerID] = frameSyncComponent
 
 		frameSyncComponent.seatNo = len(self.players)
@@ -98,6 +96,14 @@ class FrameSyncMgr(KBEngine.Entity):
 		if self.state == FS_STATE_RUNNING:
 			self.state = FS_STATE_STOP
 
+	def run(self):
+		"""
+		运行帧同步
+		:return:
+		"""
+		if self.state == FS_STATE_STOP:
+			self.state = FS_STATE_RUNNING
+
 	def reportFrame(self,entityCall, framedata):
 		"""
 		添加数据帧
@@ -109,11 +115,8 @@ class FrameSyncMgr(KBEngine.Entity):
 
 		if self.currFrame == self.emptyFrame:
 			self.currFrame[1] = [operation]
-		else:
-			for oper in self.currFrame[1]:
-				if entityCall.id == oper[0]:#如果已经有操作了，过滤掉多余的操作
-					return
-			self.currFrame[1].append(operation)	
+		elif operation not in self.currFrame[1]:
+			self.currFrame[1].append(operation)
 
 		#DEBUG_MSG('------------FrameSyncMgr::reportFrame framedata=%s ,self.currFrame = %s.' % (framedata, self.currFrame))
 

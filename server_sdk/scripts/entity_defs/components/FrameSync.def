@@ -8,7 +8,14 @@
 	</BaseMethods>
 	
 	<CellMethods>
+		<start>
+		</start>
 
+		<stop>
+		</stop>
+
+		<run>
+		</run>
 
 	</CellMethods>
 

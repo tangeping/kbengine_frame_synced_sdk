@@ -35,11 +35,9 @@ class FrameSyncReport(KBEngine.EntityComponent):
 		if exposed != self.ownerID:
 			return
 
-		#DEBUG_MSG("------FrameSyncReport------reportFrame.%i framedata:%s" % (self.ownerID,str(framedata)))
-
 		self.getFrameSyncMgr().reportFrame(self.owner,framedata)
 
-		
+		#DEBUG_MSG("reportFrame.%i framedata:%s" % (self.ownerID,str(framedata)))
 
 
 

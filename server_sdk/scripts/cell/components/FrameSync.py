@@ -35,5 +35,10 @@ class FrameSync(KBEngine.EntityComponent):
 		if self.frameMgr:
 			self.frameMgr.stop()
 
-
+	def run(self):
+		'''
+		帧同步运行
+		'''
+		if self.frameMgr:
+			self.frameMgr.run()
 

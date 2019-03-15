@@ -209,8 +209,8 @@ namespace KBEngine
         /// <returns>A string containing all three components.</returns>
         #region public override string ToString()
         public override string ToString() {
-            //return string.Format("({0:f1}, {1:f1}, {2:f1})", x.AsFloat(), y.AsFloat(), z.AsFloat());
-            return string.Format("({0}, {1}, {2})", x._serializedValue, y._serializedValue, z._serializedValue);
+            return string.Format("({0:f1}, {1:f1}, {2:f1})", x.AsFloat(), y.AsFloat(), z.AsFloat());
+            //return string.Format("({0}, {1}, {2})", x._serializedValue, y._serializedValue, z._serializedValue);
         }
         #endregion
 
@@ -314,9 +314,30 @@ namespace KBEngine
             return result;
         }
 		
-		public static FP Distance(FPVector v1, FPVector v2) {
-			return FP.Sqrt ((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z));
+		public static FP Distance(FPVector v1, FPVector v2)
+        {
+            FP result;
+            DistanceSquared(ref v1, ref v2, out result);
+            return FP.Sqrt (result);
 		}
+
+        public static void Distance(ref FPVector value1, ref FPVector value2, out FP result)
+        {
+            DistanceSquared(ref value1, ref value2, out result);
+            result = (FP)FP.Sqrt(result);
+        }
+
+        public static FP DistanceSquared(FPVector value1, FPVector value2)
+        {
+            FP result;
+            DistanceSquared(ref value1, ref value2, out result);
+            return result;
+        }
+
+        public static void DistanceSquared(ref FPVector v1, ref FPVector v2, out FP result)
+        {
+            result = (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z);
+        }
 
         /// <summary>
         /// Gets a vector with the maximum x,y and z values of both vectors.
@@ -492,6 +513,14 @@ namespace KBEngine
             result.x = value1.x / scaleFactor;
             result.y = value1.y / scaleFactor;
             result.z = value1.z / scaleFactor;
+        }
+
+        public FP costMagnitude
+        {
+            get
+            {
+                return FPMath.Round(magnitude);
+            }
         }
 
         /// <summary>

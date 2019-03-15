@@ -38,6 +38,9 @@
 		<stop>
 		</stop>
 
+		<run>
+		</run>
+
 		<reportFrame>
 		    <Arg>       ENTITYCALL      </Arg>
             <Arg>       FS_ENTITY_DATA      </Arg>

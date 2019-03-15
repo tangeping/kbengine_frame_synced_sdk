@@ -210,7 +210,7 @@ namespace KBEngine.Physics3D {
         /// against rays (rays are of infinite length). They are checked against segments
         /// which start at rayOrigin and end in rayOrigin + rayDirection.
         /// </summary>
-        #region public override bool Raycast(RigidBody body, JVector rayOrigin, JVector rayDirection, out JVector normal, out FP fraction)
+        #region public override bool Raycast(RigidBody body, FPVector rayOrigin, FPVector rayDirection, out FPVector normal, out FP fraction)
         public override bool Raycast(RigidBody body, FPVector rayOrigin, FPVector rayDirection, out FPVector normal, out FP fraction)
         {
             fraction = FP.MaxValue; normal = FPVector.zero;

@@ -803,8 +803,7 @@ namespace KBEngine {
         }
 
         public override string ToString() {
-            //return ((float)this).ToString();
-            return _serializedValue.ToString();
+            return ((float)this).ToString();
         }
 
         public static FP FromRaw(long rawValue) {

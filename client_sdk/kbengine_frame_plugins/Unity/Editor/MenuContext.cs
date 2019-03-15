@@ -60,6 +60,12 @@ namespace KBEngine {
             InstantiatePrefab("FrameSyncManager");
         }
 
+//         [MenuItem("GameObject/FrameSync/Astar", false, 12)]
+//         static void CreatePrefabAstar()
+//         {
+//             InstantiatePrefab("Astar");
+//         }
+
     }
 
 }

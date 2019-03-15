@@ -112,6 +112,18 @@ namespace KBEngine {
             value = (value < min) ? min : value;
             return value;
         }
+        #endregion 
+
+        /// <summary>
+        ///  Clamps value between 0 and 1 and returns value.
+        /// </summary>
+        /// <param name="value">The value to clamp.</param>
+        /// <returns>The clamped value.</returns>
+        #region public static FP Clamp(FP value, FP min, FP max)
+        public static FP Clamp01(FP value)
+        {
+            return Clamp(value,0,1);
+        }
         #endregion
 
         /// <summary>

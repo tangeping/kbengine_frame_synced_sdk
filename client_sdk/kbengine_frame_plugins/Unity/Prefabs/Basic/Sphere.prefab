@@ -10,9 +10,9 @@ GameObject:
   - component: {fileID: 487666}
   - component: {fileID: 3327114}
   - component: {fileID: 2308620}
-  - component: {fileID: 114257673884336304}
-  - component: {fileID: 114013920182282864}
-  - component: {fileID: 114589898697202142}
+  - component: {fileID: 114718823645952160}
+  - component: {fileID: 114785638498510718}
+  - component: {fileID: 114026243018799588}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -85,7 +85,7 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 114034}
   m_IsPrefabParent: 1
---- !u!114 &114013920182282864
+--- !u!114 &114026243018799588
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -93,28 +93,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 114034}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2203477a4a6e79b49959f007a7c5bc98, type: 3}
+  m_Script: {fileID: 11500000, guid: f72c708013f210a439c4d689c3a6efaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isTrigger: 0
-  tsMaterial: {fileID: 0}
-  center:
-    x:
-      _serializedValue: 0
-    y:
-      _serializedValue: 0
-    z:
-      _serializedValue: 0
-  lossyScale:
-    x:
-      _serializedValue: 4294967296
-    y:
-      _serializedValue: 4294967296
-    z:
-      _serializedValue: 4294967296
-  FPTransform: {fileID: 0}
-  _radius: 0
---- !u!114 &114257673884336304
+  _mass:
+    _serializedValue: 4294967296
+  _useGravity: 1
+  _isKinematic: 0
+  _linearDrag:
+    _serializedValue: 0
+  _angularDrag:
+    _serializedValue: 214748368
+  interpolation: 0
+  _constraints: 0
+--- !u!114 &114718823645952160
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -122,7 +114,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 114034}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0c6e0a53b09dd740a1745174c7ce999, type: 3}
+  m_Script: {fileID: 11500000, guid: d2e86cb2e2e03d84a80ac1e7691ab1dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _position:
@@ -151,7 +143,7 @@ MonoBehaviour:
   _serialized: 0
   tsCollider: {fileID: 0}
   tsParent: {fileID: 0}
---- !u!114 &114589898697202142
+--- !u!114 &114785638498510718
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -159,16 +151,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 114034}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e66722e7cc9da146b525275cda3ed1f, type: 3}
+  m_Script: {fileID: 11500000, guid: a28ae6410b292a849acaf86aab67a984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mass:
-    _serializedValue: 4294967296
-  _useGravity: 1
-  _isKinematic: 0
-  _linearDrag:
-    _serializedValue: 0
-  _angularDrag:
-    _serializedValue: 214748368
-  interpolation: 0
-  _constraints: 0
+  _isTrigger: 0
+  tsMaterial: {fileID: 0}
+  center:
+    x:
+      _serializedValue: 0
+    y:
+      _serializedValue: 0
+    z:
+      _serializedValue: 0
+  lossyScale:
+    x:
+      _serializedValue: 4294967296
+    y:
+      _serializedValue: 4294967296
+    z:
+      _serializedValue: 4294967296
+  FPTransform: {fileID: 0}
+  _radius: 0

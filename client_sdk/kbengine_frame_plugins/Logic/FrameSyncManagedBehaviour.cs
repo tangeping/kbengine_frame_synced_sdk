@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace KBEngine
 {
-    // Ö¡Í¬²½ÍĞ¹ÜĞĞÎªÀà
+    // å¸§åŒæ­¥æ‰˜ç®¡è¡Œä¸ºç±»
 	public class FrameSyncManagedBehaviour : IFrameSyncBehaviourGamePlay, IFrameSyncBehaviour, IFrameSyncBehaviourCallbacks
 	{
 		public IFrameSyncBehaviour FrameSyncBehavior;
@@ -15,6 +15,8 @@ namespace KBEngine
 
 		public FPPlayerInfo owner;
 
+        public bool started = false;
+
 		public FrameSyncManagedBehaviour(IFrameSyncBehaviour FrameSyncBehavior)
 		{
 			StateTracker.AddTracking(this);
@@ -22,7 +24,7 @@ namespace KBEngine
 			this.FrameSyncBehavior = FrameSyncBehavior;
 		}
 
-        #region IFrameSyncBehaviourGamePlay ½Ó¿Ú·½·¨
+        #region IFrameSyncBehaviourGamePlay æ¥å£æ–¹æ³•
         public void OnPreSyncedUpdate()
 		{
 			bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourGamePlay;
@@ -44,22 +46,22 @@ namespace KBEngine
 		public void OnSyncedUpdate()
 		{
 			bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourGamePlay;
-			if (flag)
+			if (flag && started)
 			{
 				((IFrameSyncBehaviourGamePlay)this.FrameSyncBehavior).OnSyncedUpdate();
 			}
 		}
-        #endregion IFrameSyncBehaviourGamePlay ½Ó¿Ú·½·¨
+        #endregion IFrameSyncBehaviourGamePlay æ¥å£æ–¹æ³•
 
-        #region IFrameSyncBehaviour ½Ó¿Ú·½·¨
+        #region IFrameSyncBehaviour æ¥å£æ–¹æ³•
         public void SetGameInfo(FPPlayerInfo localOwner, int numberOfPlayers)
 		{
 			//this.FrameSyncBehavior.SetGameInfo(localOwner, numberOfPlayers);
 		}
-        #endregion IFrameSyncBehaviour ½Ó¿Ú·½·¨
+        #endregion IFrameSyncBehaviour æ¥å£æ–¹æ³•
 
-        #region ÉúÃüÖÜÆÚ·½·¨
-        // ¿ªÊ¼Í¬²½
+        #region ç”Ÿå‘½å‘¨æœŸæ–¹æ³•
+        // å¼€å§‹åŒæ­¥
         public static void OnGameStarted(List<FrameSyncManagedBehaviour> generalBehaviours, Dictionary<byte, List<FrameSyncManagedBehaviour>> behaviorsByPlayer)
         {
             int i = 0;
@@ -84,7 +86,7 @@ namespace KBEngine
             }
         }
 
-        // ÓÎÏ·ÔİÍ£
+        // æ¸¸æˆæš‚åœ
         public static void OnGamePaused(List<FrameSyncManagedBehaviour> generalBehaviours, Dictionary<byte, List<FrameSyncManagedBehaviour>> behaviorsByPlayer)
         {
             int i = 0;
@@ -109,7 +111,7 @@ namespace KBEngine
             }
         }
 
-        // È¡ÏûÔİÍ£
+        // å–æ¶ˆæš‚åœ
         public static void OnGameUnPaused(List<FrameSyncManagedBehaviour> generalBehaviours, Dictionary<byte, List<FrameSyncManagedBehaviour>> behaviorsByPlayer)
         {
             int i = 0;
@@ -134,7 +136,7 @@ namespace KBEngine
             }
         }
 
-        // ÓÎÏ·½áÊø
+        // æ¸¸æˆç»“æŸ
         public static void OnGameEnded(List<FrameSyncManagedBehaviour> generalBehaviours, Dictionary<byte, List<FrameSyncManagedBehaviour>> behaviorsByPlayer)
         {
             int i = 0;
@@ -159,7 +161,7 @@ namespace KBEngine
             }
         }
 
-        // Íæ¼Ò¶Ï¿ªÁ¬½Ó
+        // ç©å®¶æ–­å¼€è¿æ¥
         public static void OnPlayerDisconnection(List<FrameSyncManagedBehaviour> generalBehaviours, Dictionary<byte, List<FrameSyncManagedBehaviour>> behaviorsByPlayer, byte playerId)
         {
             int i = 0;
@@ -183,31 +185,32 @@ namespace KBEngine
                 }
             }
         }
-        #endregion ÉúÃüÖÜÆÚ·½·¨
+        #endregion ç”Ÿå‘½å‘¨æœŸæ–¹æ³•
 
-        #region IFrameSyncBehaviourCallbacks ½Ó¿Ú·½·¨
-        // ¿ªÊ¼Í¬²½
+        #region IFrameSyncBehaviourCallbacks æ¥å£æ–¹æ³•
+        // å¼€å§‹åŒæ­¥
         public void OnSyncedStart()
 		{
 			bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
-			if (flag)
+			if (flag && !started)
 			{
 				((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnSyncedStart();
+                started = true;
 // 				bool flag2 = this.localOwner.Id == this.owner.Id;
-// 				if (flag2) // ±¾µØÍæ¼Ò
+// 				if (flag2) // æœ¬åœ°ç©å®¶
 // 				{
 // 					((IFrameSyncBehaviourCallbacks)this.FrameSyncBehavior).OnSyncedStartLocalPlayer();
 // 				}
 			}
 		}
 
-        // ¿ªÊ¼Í¬²½±¾µØÍæ¼Ò
+        // å¼€å§‹åŒæ­¥æœ¬åœ°ç©å®¶
         public void OnSyncedStartLocalPlayer()
         {
             throw new NotImplementedException();
         }
 
-        // ÓÎÏ·ÔİÍ£
+        // æ¸¸æˆæš‚åœ
 		public void OnGamePaused()
 		{
 			bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
@@ -217,7 +220,7 @@ namespace KBEngine
 			}
 		}
 
-        // È¡ÏûÔİÍ£
+        // å–æ¶ˆæš‚åœ
 		public void OnGameUnPaused()
 		{
 			bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
@@ -227,7 +230,7 @@ namespace KBEngine
 			}
 		}
 
-        // ÓÎÏ·½áÊø
+        // æ¸¸æˆç»“æŸ
 		public void OnGameEnded()
 		{
 			bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
@@ -237,7 +240,7 @@ namespace KBEngine
 			}
 		}
 
-        // Íæ¼Ò¶Ï¿ªÁ¬½Ó
+        // ç©å®¶æ–­å¼€è¿æ¥
 		public void OnPlayerDisconnection(int playerId)
 		{
 			bool flag = this.FrameSyncBehavior is IFrameSyncBehaviourCallbacks;
@@ -247,6 +250,6 @@ namespace KBEngine
 			}
 		}
 
-        #endregion IFrameSyncBehaviourCallbacks ½Ó¿Ú·½·¨
+        #endregion IFrameSyncBehaviourCallbacks æ¥å£æ–¹æ³•
     }
 }

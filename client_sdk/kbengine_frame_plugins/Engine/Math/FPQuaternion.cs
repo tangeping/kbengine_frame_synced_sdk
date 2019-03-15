@@ -535,6 +535,19 @@ namespace KBEngine
             return result;
         }
 
+        /**
+         *  @brief Rotates a {@link FPVector} by the {@link TSQuanternion}.
+         **/
+        public static bool operator ==(FPQuaternion l, FPQuaternion r)
+        {
+            return l.x == r.x && l.y == r.y && l.z == r.z && l.w == r.w;
+        }
+
+        public static bool operator !=(FPQuaternion l, FPQuaternion r)
+        {
+            return !(l == r);
+        }
+
         public override string ToString() {
             return string.Format("({0:f1}, {1:f1}, {2:f1}, {3:f1})", x.AsFloat(), y.AsFloat(), z.AsFloat(), w.AsFloat());
         }
