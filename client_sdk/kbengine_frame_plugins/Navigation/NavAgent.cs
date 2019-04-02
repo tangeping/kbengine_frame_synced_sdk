@@ -59,7 +59,7 @@ public class NavAgent : FrameSyncBehaviour
         return result;
     }
 
-    void goToDestination(FPVector destPositon)
+    public void goToDestination(FPVector destPositon)
     {
         if (FPVector.Distance(FPTransform.position, destPositon) < Speed * FrameSyncManager.DeltaTime)
         {
@@ -78,9 +78,7 @@ public class NavAgent : FrameSyncBehaviour
         FPTransform.position = GetOnGroundPoint(FPTransform.position);
     }
 
-    // if you use Roy-TAstar navigate,you should call GetPath(start,end) function. 
-    //if you use Justinhj navigate , you should call GetPath(start,end,new AstarPathfinder(gridMap,0) function.
-    public void SetDestination(FPVector dest)
+    public void SetDestination(FPVector dest,int type = 0)
     {
         ClearPath();//清除标记
         dest = GetOnGroundPoint(dest);
@@ -88,17 +86,17 @@ public class NavAgent : FrameSyncBehaviour
         endPosition = dest;
         startNode = GridMap.getIndex(startPosition);
         endNode = GridMap.getIndex(endPosition);
-        path = GridMap.GetPath(startNode, endNode/*, new AStarPathfinder(gridMap, 0)*/);
-//         if (name == "monster_10002")
-//         {
-//             Debug.LogFormat("{0} startNode:{1},endNode:{2},path.length:{3},start:{4},end:{5}",
-//                 name, startNode, endNode, path.Length,startPosition,endPosition);
-//         }
-//         else
-//         {
-//             Debug.LogWarningFormat("{0} startNode:{1},endNode:{2},path.length:{3},start:{4},end:{5}",
-//                 name, startNode, endNode, path.Length, startPosition, endPosition);
-//         }
+
+        Debug.Log("startNode:" + startNode + ",endNode:" + endNode);
+        if(type == 0)// if you use Roy-TAstar navigate,you should call GetPath(start,end) function. 
+        {
+            path = GridMap.GetPath(startNode, endNode);
+        }
+        else if(type == 1)    //if you use Justinhj navigate , you should call GetPath(start,end,new AstarPathfinder(gridMap,0) function.
+        {
+            path = GridMap.GetPath(startNode, endNode, AStarPath.PathFinder);
+            Debug.Log("path.length:" + path.Length);
+        }
     }
 
     private void MoveStep()
@@ -127,16 +125,6 @@ public class NavAgent : FrameSyncBehaviour
             FPTransform.LookAt(new FPVector(nodePostion.x, FPTransform.position.y, nodePostion.z));
             FPTransform.Translate(velocity, Space.World);
         }
-        //         if (name == "monster_10002")
-        //         {
-        //             Debug.LogFormat("{0} FPTransform.position:{1},endNode:{2},stepIndex:{3},Length:{4},node:{5}",
-        //                 name, GridMap.getIndex(FPTransform.position), endNode, stepIndex, path.Length, path[stepIndex]);
-        //         }
-        //         else
-        //         {
-        //             Debug.LogWarningFormat("{0} FPTransform.position:{1},endNode:{2},stepIndex:{3},Length:{4},node:{5}", 
-        //                 name, GridMap.getIndex(FPTransform.position), endNode, stepIndex, path.Length, path[stepIndex]);
-        //         }
 //         Debug.LogWarningFormat("{0} FPTransform.position:{1},endNode:{2},stepIndex:{3},Length:{4},node:{5},position:{6}",
 //             name, GridMap.getIndex(FPTransform.position), endNode, stepIndex, path.Length, path[stepIndex],FPTransform.position);
     }
@@ -156,12 +144,14 @@ public class NavAgent : FrameSyncBehaviour
         MoveStep();
     }
 
-    private void OnDrawGizmos()
+
+
+    void onDrawPath()
     {
-        if(path != null )
+        if (path!= null && path.Length > 0)
         {
-            Gizmos.color = Color.red;
-            FPVector currPostion = FPTransform.position;
+            Gizmos.color = Color.green;
+            FPVector currPostion = GridMap.GetCenterPoint(path[0].x, path[0].y);
             for (int i = stepIndex; i < path.Length; i++)
             {
                 FPVector nextPosition = GridMap.GetCenterPoint(path[i].x, path[i].y);
@@ -170,5 +160,9 @@ public class NavAgent : FrameSyncBehaviour
                 currPostion = nextPosition;
             }
         }
+    }
+    private void OnDrawGizmos()
+    {
+        onDrawPath();
     }
 }

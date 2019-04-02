@@ -60,6 +60,7 @@ namespace KBEngine
         // Fixed sizes for collections
         readonly int kPreallocatedNodes = 80000;
         readonly int kPreallocatedMapSearchNodes = 80000;
+        readonly int kiterationLimit = 1000; // if the path is not found beyond the limit,actually it has failed. the worst step is grid weidth * grid height
 
         readonly int kPreallocatedOpenListSlots = 32;
         readonly int kPreallocatedClosedListSlots = 256;
@@ -202,7 +203,7 @@ namespace KBEngine
             // Failure is defined as emptying the open list as there is nothing left to 
             // search...
             // New: Allow user abort
-            if (m_OpenList.Count == 0 || m_CancelRequest)
+            if (m_OpenList.Count == 0 || m_CancelRequest || m_Steps > kiterationLimit)
             {
                 FreeSolutionNodes();
                 m_State = SearchState.Failed;
@@ -375,7 +376,7 @@ namespace KBEngine
                     closedListHighWaterMark = m_ClosedList.Count;
                 }
             } // end else (not goal so expand)
-
+            
             return m_State; // 'Succeeded' bool is false at this point. 
         }
 

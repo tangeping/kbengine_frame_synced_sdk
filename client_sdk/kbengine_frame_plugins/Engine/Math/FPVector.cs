@@ -204,7 +204,7 @@ namespace KBEngine
 		}
 
         /// <summary>
-        /// Builds a string from the JVector.
+        /// Builds a string from the FPVector.
         /// </summary>
         /// <returns>A string containing all three components.</returns>
         #region public override string ToString()
@@ -242,12 +242,12 @@ namespace KBEngine
         }
 
         /// <summary>
-        /// Tests if two JVector are equal.
+        /// Tests if two FPVector are equal.
         /// </summary>
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>Returns true if both values are equal, otherwise false.</returns>
-        #region public static bool operator ==(JVector value1, JVector value2)
+        #region public static bool operator ==(FPVector value1, FPVector value2)
         public static bool operator ==(FPVector value1, FPVector value2)
         {
             return (((value1.x == value2.x) && (value1.y == value2.y)) && (value1.z == value2.z));
@@ -255,12 +255,12 @@ namespace KBEngine
         #endregion
 
         /// <summary>
-        /// Tests if two JVector are not equal.
+        /// Tests if two FPVector are not equal.
         /// </summary>
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>Returns false if both values are equal, otherwise true.</returns>
-        #region public static bool operator !=(JVector value1, JVector value2)
+        #region public static bool operator !=(FPVector value1, FPVector value2)
         public static bool operator !=(FPVector value1, FPVector value2)
         {
             if ((value1.x == value2.x) && (value1.y == value2.y))
@@ -277,7 +277,7 @@ namespace KBEngine
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>A vector with the minimum x,y and z values of both vectors.</returns>
-        #region public static JVector Min(JVector value1, JVector value2)
+        #region public static FPVector Min(FPVector value1, FPVector value2)
 
         public static FPVector Min(FPVector value1, FPVector value2)
         {
@@ -306,7 +306,7 @@ namespace KBEngine
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>A vector with the maximum x,y and z values of both vectors.</returns>
-        #region public static JVector Max(JVector value1, JVector value2)
+        #region public static FPVector Max(FPVector value1, FPVector value2)
         public static FPVector Max(FPVector value1, FPVector value2)
         {
             FPVector result;
@@ -391,7 +391,7 @@ namespace KBEngine
         /// <param name="position">The vector to transform.</param>
         /// <param name="matrix">The transform matrix.</param>
         /// <returns>The transformed vector.</returns>
-        #region public static JVector Transform(JVector position, JMatrix matrix)
+        #region public static FPVector Transform(FPVector position, JMatrix matrix)
         public static FPVector Transform(FPVector position, FPMatrix matrix)
         {
             FPVector result;
@@ -440,7 +440,7 @@ namespace KBEngine
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>Returns the dot product of both vectors.</returns>
-        #region public static FP Dot(JVector vector1, JVector vector2)
+        #region public static FP Dot(FPVector vector1, FPVector vector2)
         public static FP Dot(FPVector vector1, FPVector vector2)
         {
             return FPVector.Dot(ref vector1, ref vector2);
@@ -465,7 +465,7 @@ namespace KBEngine
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The sum of both vectors.</returns>
-        #region public static void Add(JVector value1, JVector value2)
+        #region public static void Add(FPVector value1, FPVector value2)
         public static FPVector Add(FPVector value1, FPVector value2)
         {
             FPVector result;
@@ -529,7 +529,7 @@ namespace KBEngine
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The difference of both vectors.</returns>
-        #region public static JVector Subtract(JVector value1, JVector value2)
+        #region public static FPVector Subtract(FPVector value1, FPVector value2)
         public static FPVector Subtract(FPVector value1, FPVector value2)
         {
             FPVector result;
@@ -561,7 +561,7 @@ namespace KBEngine
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>The cross product of both vectors.</returns>
-        #region public static JVector Cross(JVector vector1, JVector vector2)
+        #region public static FPVector Cross(FPVector vector1, FPVector vector2)
         public static FPVector Cross(FPVector vector1, FPVector vector2)
         {
             FPVector result;
@@ -600,7 +600,7 @@ namespace KBEngine
         /// <summary>
         /// Inverses the direction of the vector.
         /// </summary>
-        #region public static JVector Negate(JVector value)
+        #region public static FPVector Negate(FPVector value)
         public void Negate()
         {
             this.x = -this.x;
@@ -642,7 +642,7 @@ namespace KBEngine
         /// </summary>
         /// <param name="value">The vector which should be normalized.</param>
         /// <returns>A normalized vector.</returns>
-        #region public static JVector Normalize(JVector value)
+        #region public static FPVector Normalize(FPVector value)
         public static FPVector Normalize(FPVector value)
         {
             FPVector result;
@@ -677,7 +677,7 @@ namespace KBEngine
         }
         #endregion
 
-        #region public static void Swap(ref JVector vector1, ref JVector vector2)
+        #region public static void Swap(ref FPVector vector1, ref FPVector vector2)
 
         /// <summary>
         /// Swaps the components of both vectors.
@@ -708,7 +708,7 @@ namespace KBEngine
         /// <param name="value1">The vector to multiply.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the multiplied vector.</returns>
-        #region public static JVector Multiply(JVector value1, FP scaleFactor)
+        #region public static FPVector Multiply(FPVector value1, FP scaleFactor)
         public static FPVector Multiply(FPVector value1, FP scaleFactor)
         {
             FPVector result;
@@ -736,7 +736,7 @@ namespace KBEngine
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>Returns the cross product of both.</returns>
-        #region public static JVector operator %(JVector value1, JVector value2)
+        #region public static FPVector operator %(FPVector value1, FPVector value2)
         public static FPVector operator %(FPVector value1, FPVector value2)
         {
             FPVector result; FPVector.Cross(ref value1, ref value2, out result);
@@ -750,7 +750,7 @@ namespace KBEngine
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>Returns the dot product of both.</returns>
-        #region public static FP operator *(JVector value1, JVector value2)
+        #region public static FP operator *(FPVector value1, FPVector value2)
         public static FP operator *(FPVector value1, FPVector value2)
         {
             return FPVector.Dot(ref value1, ref value2);
@@ -763,7 +763,7 @@ namespace KBEngine
         /// <param name="value1">The vector to scale.</param>
         /// <param name="value2">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        #region public static JVector operator *(JVector value1, FP value2)
+        #region public static FPVector operator *(FPVector value1, FP value2)
         public static FPVector operator *(FPVector value1, FP value2)
         {
             FPVector result;
@@ -778,7 +778,7 @@ namespace KBEngine
         /// <param name="value2">The vector to scale.</param>
         /// <param name="value1">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        #region public static JVector operator *(FP value1, JVector value2)
+        #region public static FPVector operator *(FP value1, FPVector value2)
         public static FPVector operator *(FP value1, FPVector value2)
         {
             FPVector result;
@@ -793,7 +793,7 @@ namespace KBEngine
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The difference of both vectors.</returns>
-        #region public static JVector operator -(JVector value1, JVector value2)
+        #region public static FPVector operator -(FPVector value1, FPVector value2)
         public static FPVector operator -(FPVector value1, FPVector value2)
         {
             FPVector result; FPVector.Subtract(ref value1, ref value2, out result);
@@ -807,7 +807,7 @@ namespace KBEngine
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The sum of both vectors.</returns>
-        #region public static JVector operator +(JVector value1, JVector value2)
+        #region public static FPVector operator +(FPVector value1, FPVector value2)
         public static FPVector operator +(FPVector value1, FPVector value2)
         {
             FPVector result; FPVector.Add(ref value1, ref value2, out result);

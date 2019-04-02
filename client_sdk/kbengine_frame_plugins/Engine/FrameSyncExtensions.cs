@@ -10,6 +10,10 @@ public static class FrameSyncExtensions {
     public static FPVector ToFPVector(this Vector3 vector) {
         return new FPVector(vector.x, vector.y, vector.z);
     }
+    public static FPVector ToFPVector(this Vector3Int vector)
+    {
+        return new FPVector(vector.x, vector.y, vector.z);
+    }
 
     public static FPVector2 ToFPVector2(this Vector3 vector) {
         return new FPVector2(vector.x, vector.y);
@@ -20,6 +24,10 @@ public static class FrameSyncExtensions {
     }
 
     public static FPVector2 ToFPVector2(this Vector2 vector) {
+        return new FPVector2(vector.x, vector.y);
+    }
+    public static FPVector2 ToFPVector2(this Vector2Int vector)
+    {
         return new FPVector2(vector.x, vector.y);
     }
 
@@ -39,22 +47,26 @@ public static class FrameSyncExtensions {
         return FPMatrix.CreateFromQuaternion(rot.ToFPQuaternion());
     }
 
-    public static Vector3 ToVector(this FPVector jVector) {
-        return new Vector3((float) jVector.x, (float) jVector.y, (float) jVector.z);
+    public static Vector3 ToVector(this FPVector fVector) {
+        return new Vector3((float) fVector.x, (float) fVector.y, (float) fVector.z);
+    }
+    public static Vector3Int ToVector3Int(this FPVector fVector)
+    {
+        return new Vector3Int((int)fVector.x, (int)fVector.y, (int)fVector.z);
     }
 
-    public static Vector3 ToVector(this FPVector2 jVector) {
-        return new Vector3((float)jVector.x, (float)jVector.y, 0);
+    public static Vector3 ToVector(this FPVector2 fVector) {
+        return new Vector3((float)fVector.x, (float)fVector.y, 0);
     }
 
 
 
-    public static void Set(this FPVector jVector, FPVector otherVector) {
-        jVector.Set(otherVector.x, otherVector.y, otherVector.z);
+    public static void Set(this FPVector fVector, FPVector otherVector) {
+        fVector.Set(otherVector.x, otherVector.y, otherVector.z);
     }
 
-    public static Quaternion ToQuaternion(this FPMatrix jMatrix) {
-        return FPQuaternion.CreateFromMatrix(jMatrix).ToQuaternion();
+    public static Quaternion ToQuaternion(this FPMatrix fMatrix) {
+        return FPQuaternion.CreateFromMatrix(fMatrix).ToQuaternion();
     }
 
 }

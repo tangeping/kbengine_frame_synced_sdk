@@ -4,13 +4,20 @@ using UnityEngine;
 namespace KBEngine
 {
     /// <summary>
-    /// A 2D offset structure. you can use an array of offsets to represent the movement pattern
+    /// A 2D offset structure. You can use an array of offsets to represent the movement pattern
     /// of your agent, for example an offset of (-1, 0) means your character is able
     /// to move a single cell to the left <see cref="MovementPatterns"/> for some predefined
     /// options.
     /// </summary>
-    public struct Offset : IEquatable<Offset>
+    public class Offset : IEquatable<Offset>
     {
+
+        //         private const float DiagonalCost = 1.4142135623730950488016887242097f; // sqrt(2)
+        //         private const float LateralCost = 1.0f;
+        private FP DiagonalCost = 1.41421356f;
+        private FP LateralCost = 1.0f;
+
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -27,33 +34,33 @@ namespace KBEngine
             if (x == 0 && y == 0)
                 throw new ArgumentException(nameof(y), $"Paramters {nameof(x)} and {nameof(y)} cannot both be zero");
 
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
 
             // Penalize diagonal movement
-            this.Cost = (x != 0 && y != 0) ? 1 : 1.4142135623730950488016887242097f; // sqrt(2)                                  
+            this.Cost = (x != 0 && y != 0) ? DiagonalCost : LateralCost;                                   
         }
 
         /// <summary>
-        /// x-position
+        /// X-position
         /// </summary>
-        public int x { get; }
+        public int X { get; }
 
         /// <summary>
-        /// y-position
+        /// Y-position
         /// </summary>
-        public int y { get; }
+        public int Y { get; }
 
         /// <summary>
         /// Relative cost of adding this offset to a position, either 1 for lateral movement, or sqrt(2) for diagonal movement
         /// </summary>
         public FP Cost { get; }
 
-        public override string ToString() => $"Offset: ({this.x}, {this.y})";
+        public override string ToString() => $"Offset: ({this.X}, {this.Y})";
         
         public bool Equals(Offset other)
         {
-            return this.x == other.x && this.y == other.y;
+            return this.X == other.X && this.Y == other.Y;
         }
 
         public override bool Equals(object obj)
@@ -76,29 +83,29 @@ namespace KBEngine
 
         public static Vector2Int operator +(Offset a, Vector2Int b)
         {
-            return new Vector2Int(a.x + b.x, a.y + b.y);
+            return new Vector2Int(a.X + b.x, a.Y + b.y);
         }
 
         public static Vector2Int operator -(Offset a, Vector2Int b)
         {
-            return new Vector2Int(a.x - b.x, a.y - b.y);
+            return new Vector2Int(a.X - b.x, a.Y - b.y);
         }
 
         public static Vector2Int operator +(Vector2Int a, Offset b)
         {
-            return new Vector2Int(a.x + b.x, a.y + b.y);
+            return new Vector2Int(a.x + b.X, a.y + b.Y);
         }
 
         public static Vector2Int operator -(Vector2Int a, Offset b)
         {
-            return new Vector2Int(a.x - b.x, a.y - b.y);
+            return new Vector2Int(a.x - b.X, a.y - b.Y);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return (this.x * 397) ^ this.y;
+                return (this.X * 397) ^ this.Y;
             }
         }
     }

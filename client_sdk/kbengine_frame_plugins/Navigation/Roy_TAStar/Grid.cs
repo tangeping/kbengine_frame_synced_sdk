@@ -11,23 +11,21 @@ namespace KBEngine
     /// Use BlockCell to make a cell completely intraversable.
     /// </summary>
     public sealed class Grid
-    {
-
-        private readonly FP DefaultCost;
-
-        private readonly FP[] Weights;
+    {       
+        private readonly byte DefaultCost;
+        private readonly byte[] Weights;
 
         private readonly FPVector Orgin;
+        private readonly byte BlockCost = 9;
 
-        private readonly Vector2Int Shape; // the Shape of Terria
-
+		private readonly Vector2Int Shape; // the Shape of Terria
         /// <summary>
         /// Creates a grid
         /// </summary>
         /// <param name="dimX">The x-dimension of your world</param>
         /// <param name="dimY">The y-dimesion of your world</param>
         /// <param name="defaultCost">The default cost every cell is initialized with</param>
-        public Grid(int dimX, int dimY, FP defaultCost, FPVector Orgin, Vector2Int Shape)
+        public Grid(int dimX, int dimY, byte defaultCost = 1)
         {
             if (defaultCost < 1)
             {
@@ -36,22 +34,20 @@ namespace KBEngine
             }
 
             this.DefaultCost = defaultCost;
-            this.Weights = new FP[dimX * dimY];
-            this.Orgin = Orgin;
+            this.Weights = new byte[dimX * dimY];
             this.DimX = dimX;
             this.DimY = dimY;
-            this.Shape = Shape;
-
+			this.Orgin = FPVector.zero;
+			this.Shape = Vector2Int.one;
             for (var n = 0; n < this.Weights.Length; n++)
             {
                 this.Weights[n] = defaultCost;
             }
         }
-
         public Grid(int dimX, int dimY, FPVector Orgin, Vector2Int Shape)
         {
             this.DefaultCost = 1;
-            this.Weights = new FP[dimX * dimY];
+            this.Weights = new byte[dimX * dimY];
             this.Orgin = Orgin;
             this.DimX = dimX;
             this.DimY = dimY;
@@ -67,7 +63,7 @@ namespace KBEngine
         /// X-dimension of the grid
         /// </summary>
         public int DimX { get; }
-
+        
         /// <summary>
         /// Y-dimension of the grid
         /// </summary>
@@ -121,9 +117,9 @@ namespace KBEngine
         /// <summary>
         /// Sets the cost for traversing a cell
         /// </summary>
-        /// <param name="nodeIndex">A Vector2Int inside the grid</param>
+        /// <param name="position">A position inside the grid</param>
         /// <param name="cost">The cost of traversing the cell, cannot be less than one</param>
-        public void SetCellCost(Vector2Int nodeIndex, FP cost)
+        public void SetCellCost(Vector2Int position, byte cost)
         {
             if (cost < 1)
             {
@@ -131,59 +127,62 @@ namespace KBEngine
                     $"Argument {nameof(cost)} with value {cost} is invalid. The cost of traversing a cell cannot be less than one");
             }
 
-            this.Weights[GetIndex(nodeIndex.x, nodeIndex.y)] = cost;
+            this.Weights[GetIndex(position.x, position.y)] = cost;
         }
 
         /// <summary>
         /// Makes the cell intraversable
         /// </summary>
-        /// <param name="Vector2Int">A Vector2Int inside the grid</param>
-        public void BlockCell(Vector2Int nodeIndex) => SetCellCost(nodeIndex, FP.PositiveInfinity);
+        /// <param name="position">A position inside the grid</param>
+        public void BlockCell(Vector2Int position) => SetCellCost(position, BlockCost);
 
         /// <summary>
         /// Makes the cell traversable, gives it the default traversal cost as provided in the constructor
         /// </summary>
-        /// <param name="Vector2Int">A Vector2Int inside the grid</param>
-        public void UnblockCell(Vector2Int nodeIndex) => SetCellCost(nodeIndex, this.DefaultCost);
+        /// <param name="position">A position inside the grid</param>
+        public void UnblockCell(Vector2Int position) => SetCellCost(position, this.DefaultCost);
 
+        public bool isBlockCell(Vector2Int nodeIndex) { return GetCellCost(nodeIndex) >= BlockCost; }
         /// <summary>
         /// Looks-up the cost for traversing a given cell, if a cell is blocked (<see cref="BlockCell"/>) 
         /// +infinity is returned
         /// </summary>
-        /// <param name="Vector2Int">A Vector2Int inside the grid</param>
+        /// <param name="position">A position inside the grid</param>
         /// <returns>The cost</returns>
-        public FP GetCellCost(Vector2Int nodeIndex)
+        public byte GetCellCost(Vector2Int position)
         {
-            return this.Weights[GetIndex(nodeIndex.x, nodeIndex.y)];
+            return this.Weights[GetIndex(position.x, position.y)];
         }
+
         /// <summary>
         /// Looks-up the cost for traversing a given cell, does not check
-        /// if the Vector2Int is inside the grid
+        /// if the position is inside the grid
         /// </summary>
-        /// <param name="Vector2Int">A Vector2Int inside the grid</param>
+        /// <param name="position">A position inside the grid</param>
         /// <returns>The cost</returns>
-        internal FP GetCellCostUnchecked(int index_x, int index_y)
+        internal byte GetCellCostUnchecked(Vector2Int position)
         {
-            return this.Weights[GetIndexUnchecked(index_x, index_y)];
+            return this.Weights[GetIndexUnchecked(position.x, position.y)];
         }
 
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent that can
         /// move both diagonal and lateral
         /// </summary>
-        /// <param name="start">The start Vector2Int</param>
-        /// <param name="end">The end Vector2Int</param>        
+        /// <param name="start">The start position</param>
+        /// <param name="end">The end position</param>        
         /// <returns>Vector2Ints along the shortest path from start to end, or an empty array if no path could be found</returns>
         public Vector2Int[] GetPath(Vector2Int start, Vector2Int end)
             => GetPath(start, end, MovementPatterns.Full);
 
-        #region Roy-Astar
+        public Vector2Int[] GetPath(Vector2Int start, Vector2Int end, AStarPathfinder pathfinder)
+            => PathFinder.Pathfind(this, start, end, pathfinder).ToArray();
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
         /// movement pattern
         /// </summary>
-        /// <param name="start">The start Vector2Int</param>
-        /// <param name="end">The end Vector2Int</param>
+        /// <param name="start">The start position</param>
+        /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
         /// <returns>Vector2Ints along the shortest path from start to end, or an empty array if no path could be found</returns>
         public Vector2Int[] GetPath(Vector2Int start, Vector2Int end, Offset[] movementPattern)
@@ -195,8 +194,8 @@ namespace KBEngine
                 return new Vector2Int[0];
             }
 
-            // The Pathfinder returns the Vector2Ints that found the end. If we want
-            // to list Vector2Ints from start to end we need reverse the traversal.
+            // The Pathfinder returns the positions that found the end. If we want
+            // to list positions from start to end we need reverse the traversal.
             var steps = new Stack<Vector2Int>();
             
             foreach (var step in current)
@@ -211,8 +210,8 @@ namespace KBEngine
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
         /// movement pattern. Instructs the path finder to give up if the path is not found after a number of iterations.
         /// </summary>
-        /// <param name="start">The start Vector2Int</param>
-        /// <param name="end">The end Vector2Int</param>
+        /// <param name="start">The start position</param>
+        /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
         /// <param name="iterationLimit">Maximum number of nodes to check before the path finder gives up</param>
         /// <returns>Vector2Ints along the shortest path from start to end, or an empty array if no path could be found</returns>
@@ -225,8 +224,8 @@ namespace KBEngine
                 return new Vector2Int[0];
             }
 
-            // The Pathfinder returns the Vector2Ints that found the end. If we want
-            // to list Vector2Ints from start to end we need reverse the traversal.
+            // The Pathfinder returns the positions that found the end. If we want
+            // to list positions from start to end we need reverse the traversal.
             var steps = new Stack<Vector2Int>();
 
             foreach (var step in current)
@@ -255,37 +254,17 @@ namespace KBEngine
             }
 
             return GetIndexUnchecked(x, y);
-        } 
+        }     
         
         public bool CheckIndexValid(int x, int y)
         {
             return (x >= 0 && x < this.DimX) && (y >= 0 && y < this.DimY); 
         }
-
         /// <summary>
         /// Converts a 2d index to a 1d index without any bounds checking
         /// </summary>        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int GetIndexUnchecked(int x, int y) => this.DimX * y + x;
-
-        #endregion
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="pathfinder"></param>
-        /// <returns></returns>
-        public Vector2Int[] GetPath(Vector2Int start, Vector2Int end, AStarPathfinder pathfinder)
-        {
-            var current = PathFinder.Pathfind(this, start, end, pathfinder);
-
-            if (current == null)
-            {
-                return new Vector2Int[0];
-            }
-            return current.ToArray();
-        }
     }    
 }
 

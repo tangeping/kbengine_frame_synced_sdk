@@ -12,6 +12,8 @@ namespace KBEngine
 
         public TextAsset file_cachedStartup = null;
 
+        private AStarPathfinder _pathfinder = null;
+
         private Grid _gridGraph = null;
 
         private static AStarPath instance;
@@ -62,16 +64,30 @@ namespace KBEngine
         {
             get
             {
+                if(instance._gridGraph == null)
+                {
+                    instance.LoadFromCache();
+                }
                 return instance._gridGraph;
+            }
+        }
+
+        public static AStarPathfinder PathFinder
+        {
+            get
+            {
+                if(instance._pathfinder == null)
+                {
+                    instance._pathfinder = new AStarPathfinder(GridGraph, 0);
+                }
+                return instance._pathfinder;
             }
         }
 
         private bool showGraphs = false;
         private void Awake()
         {
-            instance = this;
-            // AddGraph(AStarData.GraphType.GridGraph);
-            LoadFromCache();          
+            instance = this;     
         }
 
         // Use this for initialization
@@ -91,17 +107,10 @@ namespace KBEngine
             if (file_cachedStartup != null)
             {
                 CahcheGridData cachData = JsonConvert.DeserializeObject<CahcheGridData>(file_cachedStartup.text);
-
                 this._gridGraph = cachData.DeserializeToGrid();
-
                 if (this._gridGraph.DimX > 0 && this._gridGraph.DimY > 0)
                 {
                     Debug.Log("Load " + file_cachedStartup.name + " Successfully!!!");
-
-//                     for (int i = 0; i < 20; i++)
-//                     {
-//                         Debug.LogFormat("-----------node[{0}] = {1}",i,this.gridGraph.GetCenterPoint(i% this.gridGraph.DimX,i / this.gridGraph.DimX));
-//                     }
                 }
             }
             else

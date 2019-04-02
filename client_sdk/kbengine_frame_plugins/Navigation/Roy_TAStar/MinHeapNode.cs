@@ -5,15 +5,15 @@ namespace KBEngine
     /// <summary>
     /// Node in a heap
     /// </summary>
-    internal sealed class MinHeapNode 
+    internal sealed class MinHeapNode
     {        
-        public MinHeapNode(Vector2Int nodeIndex, FP expectedCost)
+        public MinHeapNode(Vector2Int position, FP expectedCost)
         {
-            this.NodeIndex = nodeIndex;
+            this.Position     = position;
             this.ExpectedCost = expectedCost;            
         }
 
-        public Vector2Int NodeIndex { get; }
+        public Vector2Int Position { get; }
         public FP ExpectedCost { get; set; }                
         public MinHeapNode Next { get; set; }
     }

@@ -64,13 +64,13 @@ namespace KBEngine
     [System.Serializable]
     public struct CahcheGridData
     {
-        public long[,] weights;
+        public byte[,] weights;
         public Long3 orgin;
         public Vector2Int shape;
 
         public CahcheGridData(Grid g)
         {
-            this.weights = new long[g.DimY,g.DimX];
+            this.weights = new byte[g.DimY,g.DimX];
             FPVector gridOrgin = g.GetOrgin();
             this.orgin = new Long3(gridOrgin.x.RawValue, gridOrgin.y.RawValue, gridOrgin.z.RawValue);
             this.shape = g.GetShape();
@@ -80,7 +80,7 @@ namespace KBEngine
                 for (int j = 0; j < g.DimX; j++)
                 {
                     Vector2Int nodeIndex = new Vector2Int(i, j);
-                    this.weights[i, j] = g.GetCellCost(nodeIndex).RawValue;
+                    this.weights[i, j] = g.GetCellCost(nodeIndex);
                 }
             }
         }
@@ -96,8 +96,14 @@ namespace KBEngine
             {
                 for (int j = 0; j < col; j++)
                 {
-                    Vector2Int index = new Vector2Int(i, j);
-                    g.SetCellCost(index, FP.FromRaw(this.weights[i, j]));
+                    if (this.weights[i, j] == 1)
+                    {
+                        g.UnblockCell(new Vector2Int(i, j));
+                    }
+                    else
+                    {
+                        g.BlockCell(new Vector2Int(i, j));
+                    }
                 }
             }
             return g;

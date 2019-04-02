@@ -12,7 +12,6 @@ namespace KBEngine
     {
         public static List<Vector2Int> FindPath(Grid grid, Vector2Int start, Vector2Int end, Offset[] movementPattern)
         {            
-
             if (start == end)
             {
                 return new List<Vector2Int> {start};
@@ -28,7 +27,8 @@ namespace KBEngine
             while (open.HasNext())
             {
                 // Get the best candidate
-                var current = open.Pop().NodeIndex;
+                var current = open.Pop().Position;
+
 
                 if (current == end)
                 {
@@ -36,7 +36,6 @@ namespace KBEngine
                 }
 
                 Step(grid, open, cameFrom, costSoFar, movementPattern, current, end);
-
             }
 
             return null;
@@ -59,14 +58,17 @@ namespace KBEngine
             while (open.HasNext() && iterationLimit > 0)
             {
                 // Get the best candidate
-                var current = open.Pop().NodeIndex;
- 
+                var current = open.Pop().Position;
+
+
                 if (current == end)
                 {
                     return ReconstructPath(grid, start, end, cameFrom);
                 }
 
                 Step(grid, open, cameFrom, costSoFar, movementPattern, current, end);
+
+
 
                 --iterationLimit;
             }
@@ -83,22 +85,24 @@ namespace KBEngine
             Vector2Int current,
             Vector2Int end)
         {
-            // Get the cost associated with getting to the current Vector2Int
-            var initialCost = costSoFar[grid.GetIndexUnchecked(current.x,current.y)];
+            // Get the cost associated with getting to the current position
+            var initialCost = costSoFar[grid.GetIndexUnchecked(current.x, current.y)];
 
             // Get all directions we can move to according to the movement pattern and the dimensions of the grid
             foreach (var option in GetMovementOptions(current, grid.DimX, grid.DimY, movementPattern))
             {
                 var position = current + option;
-                var cellCost = grid.GetCellCostUnchecked(position.x,position.y);
+                var cellCost = grid.GetCellCostUnchecked(position);
 
                 // Ignore this option if the cell is blocked
-                if (FP.IsInfinity(cellCost))
+                //                 if (FP.IsInfinity(cellCost))
+                //                     continue;
+                if (grid.isBlockCell(position))
                     continue;
 
-                var index = grid.GetIndexUnchecked(position.x,position.y);
+                var index = grid.GetIndexUnchecked(position.x, position.y);
 
-                // Compute how much it would cost to get to the new Vector2Int via this path
+                // Compute how much it would cost to get to the new position via this path
                 var newCost = initialCost + cellCost * option.Cost;
 
                 // Compare it with the best cost we have so far, 0 means we don't have any path that gets here yet
@@ -114,6 +118,8 @@ namespace KBEngine
                 // to get from here to the end, and store the node in the open list
                 var expectedCost = newCost + ManhattanDistance(position, end);
                 open.Push(new MinHeapNode(position, expectedCost));
+
+
             }
         }
 
@@ -123,7 +129,7 @@ namespace KBEngine
             var current = end;
             do
             {
-                var previous = cameFrom[grid.GetIndexUnchecked(current.x,current.y)];               
+                var previous = cameFrom[grid.GetIndexUnchecked(current.x, current.y)];               
                 current = previous;
                 path.Add(current);
             } while (current != start);
@@ -132,7 +138,7 @@ namespace KBEngine
         }        
 
         private static IEnumerable<Offset> GetMovementOptions(
-            Vector2Int nodeIndex,
+            Vector2Int position,
             int dimX,
             int dimY,
             IEnumerable<Offset> movementPattern)
@@ -140,7 +146,7 @@ namespace KBEngine
             return movementPattern.Where(
                 m =>
                 {
-                    var target = nodeIndex + m;
+                    var target = position + m;
                     return target.x >= 0 && target.x < dimX && target.y >= 0 && target.y < dimY;
                 });            
         }        
@@ -148,7 +154,9 @@ namespace KBEngine
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static FP ManhattanDistance(Vector2Int p0, Vector2Int p1)
         {
-            return FPMath.Abs(p0.x - p1.x) + FPMath.Abs(p0.y - p1.y);
+            var dx = FPMath.Abs(p0.x - p1.x);
+            var dy = FPMath.Abs(p0.y - p1.y);
+            return dx + dy;
         }
 
         /// <summary>
@@ -159,10 +167,10 @@ namespace KBEngine
         /// <param name="goalPos"></param>
         /// <param name="pathfinder"></param>
         /// <returns></returns>
-        public static List<Vector2Int> Pathfind(Grid grid, Vector2Int startPos, Vector2Int goalPos,AStarPathfinder pathfinder = null)
+        public static List<Vector2Int> Pathfind(Grid grid, Vector2Int startPos, Vector2Int goalPos, AStarPathfinder pathfinder = null)
         {
             // Reset the allocated MapSearchNode pointer
-            if(pathfinder == null)
+            if (pathfinder == null)
             {
                 pathfinder = new AStarPathfinder(grid);
             }
@@ -227,7 +235,7 @@ namespace KBEngine
             else if (searchState == AStarPathfinder.SearchState.Failed)
             {
                 // FAILED, no path to goal
-                //System.Console.WriteLine("Pathfind FAILED!");
+                Debug.LogError("Pathfind FAILED!");
             }
 
             return null;

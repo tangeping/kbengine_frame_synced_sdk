@@ -372,18 +372,6 @@ namespace KBEngine {
                     return;
                 }
 			}
-
-//             if(duration > FrameSyncManager.DeltaTime)
-//             {
-//                 duration = 0;
-//             }
-//             else
-//             {
-//                 duration += Time.deltaTime;
-//             }
-//             
-//             float factor = duration / FrameSyncManager.DeltaTime.AsFloat();
-//             transform.position = Vector3.Lerp(transform.position, position.ToVector(), factor);
             transform.position = position.ToVector();
             transform.rotation = rotation.ToQuaternion();
             transform.localScale = scale.ToVector();
